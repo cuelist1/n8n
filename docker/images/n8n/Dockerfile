@@ -11,14 +11,14 @@ FROM n8nio/base:${NODE_VERSION} AS system-deps
 # ==============================================================================
 # STAGE 2: Application Artifact Processor
 # ==============================================================================
-FROM alpine:3.22.0 AS app-artifact-processor
+FROM arm64v8/alpine AS app-artifact-processor
 
 COPY ./compiled /app/
 
 # ==============================================================================
 # STAGE 3: Task Runner Launcher
 # ==============================================================================
-FROM arm64v8/alpine:latest AS launcher-downloader
+FROM arm64v8/alpine AS launcher-downloader
 ARG TARGETPLATFORM
 ARG LAUNCHER_VERSION
 
