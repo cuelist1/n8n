@@ -18,7 +18,7 @@ COPY ./compiled /app/
 # ==============================================================================
 # STAGE 3: Task Runner Launcher
 # ==============================================================================
-FROM alpine:3.22.0 AS launcher-downloader
+FROM arm64v8/alpine:latest AS launcher-downloader
 ARG TARGETPLATFORM
 ARG LAUNCHER_VERSION
 
