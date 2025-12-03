@@ -1,11 +1,13 @@
 {
   "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
   "connections": {
     "If": {
       "main": [
         [
           {
-            "node": "Update Stack",
+            "node": "Get Stack",
             "type": "main",
             "index": 0
           }
@@ -55,6 +57,28 @@
           }
         ]
       ]
+    },
+    "Get Stack": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Update Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Stack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2025-11-29T02:03:16.253Z",
@@ -63,7 +87,7 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "name": "n8n-autoupdate",
+  "name": "n8n Portainer Stack Redeploy",
   "nodes": [
     {
       "parameters": {
@@ -244,7 +268,7 @@
       "parameters": {
         "content": "## Start Update\nUsing Portainer Api",
         "height": 272,
-        "width": 256
+        "width": 544
       },
       "id": "dd4c7087-22fd-4c7f-b6d3-d3ca2451002f",
       "name": "Sticky Note5",
@@ -258,20 +282,19 @@
     {
       "parameters": {
         "resource": "stacks",
-        "operation": "update",
+        "operation": "get",
         "environmentId": "2",
         "stackId": "117",
-        "stackFileContent": "---\nservices:\n  n8n:\n    image: n8nio/n8n:latest\n    platform: arm64\n    container_name: n8n-test-1\n    environment:\n      - N8N_METRICS=true # Enable metrics endpoint\n      - N8N_METRICS_INCLUDE_QUEUE_METRICS=true # Optional: Enable queue metrics\n      - N8N_LOG_LEVEL=info\n      - GENERIC_TIMEZONE=Americas/New York\n      - TZ=Americas/New York\n      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true\n      - N8N_RUNNERS_ENABLED=true\n      - N8N_SECURE_COOKIE=false\n      - N8N_EDITOR_BASE_URL=http://n8n.210parklab.org:5678 enable postgres -\n        DB_TYPE=postgresdb - DB_POSTGRESDB_HOST=postgres -\n        DB_POSTGRESDB_PORT=${DB_POSTGRESDB_PORT:-5432} -\n        DB_POSTGRESDB_DATABASE=${POSTGRES_DB} -\n        DB_POSTGRESDB_USER=${POSTGRES_USER} -\n        DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}\n    volumes:\n      - /etc/localtime:/etc/localtime:ro\n      - data:/home/node/.n8n\n    ports:\n      - 5678:5678\n    #networks:\n    #  - proxy\n    labels:\n      - traefik.enable=true\n      - traefik.http.routers.n8n.rule=Host(`http://n8n.210parklab.org:5678`)\n      - traefik.http.routers.n8n.entrypoints=websecure\n      - traefik.http.routers.n8n.tls=true\n      - traefik.http.routers.n8n.tls.certresolver=${TRAEFIK_CERTRESOLVER:-le}\n      - traefik.http.services.n8n.loadbalancer.server.port=${N8N_PORT:-5678}\n    restart: unless-stopped\nvolumes:\n  data:\n    driver: local\n",
         "requestOptions": {}
       },
+      "name": "Get Stack",
       "type": "n8n-nodes-portainer.portainer",
       "typeVersion": 1,
       "position": [
-        1296,
+        1312,
         80
       ],
-      "id": "b211177d-e327-4511-b3df-97fb96a85f13",
-      "name": "Update Stack",
+      "id": "3aea56aa-ea81-47d2-91cf-8b5298da8313",
       "credentials": {
         "portainerApi": {
           "id": "BpUkwsej2cQrpjvR",
@@ -281,26 +304,40 @@
     },
     {
       "parameters": {
-        "resource": "images",
-        "operation": "pull",
-        "environmentId": "2",
-        "imageName": "n8nio/n8n",
-        "requestOptions": {}
+        "method": "PUT",
+        "url": "http://192.168.10.100:9000/api/stacks/117?endpointId=2",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "portainerApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"stackFileContent\": \"---\\nservices:\\n  n8n:\\n    image: n8nio/n8n:latest\\n    platform: linux/arm64\\n    container_name: n8n-test-1\\n    environment:\\n      - N8N_METRICS=true\\n      - N8N_METRICS_INCLUDE_QUEUE_METRICS=true\\n      - NODE_OPTIONS=--max-old-space-size=512\\n      - EXECUTIONS_DATA_PRUNE=true\\n      - EXECUTIONS_DATA_MAX_AGE=168\\n      - N8N_HIRING_BANNER_ENABLED=false\\n      - N8N_LOG_LEVEL=warn\\n      - GENERIC_TIMEZONE=America/New_York\\n      - TZ=America/New_York\\n      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true\\n      - N8N_RUNNERS_ENABLED=true\\n      - N8N_SECURE_COOKIE=false\\n      - N8N_EDITOR_BASE_URL=http://n8n.210parklab.org:5678\\n    volumes:\\n      - /etc/localtime:/etc/localtime:ro\\n      - data:/home/node/.n8n\\n    ports:\\n      - \\\"5678:5678\\\"\\n    labels:\\n      - traefik.enable=true\\n      - traefik.http.routers.n8n.rule=Host(`n8n.210parklab.org`)\\n      - traefik.http.routers.n8n.entrypoints=websecure\\n      - traefik.http.routers.n8n.tls=true\\n      - traefik.http.routers.n8n.tls.certresolver=${TRAEFIK_CERTRESOLVER:-le}\\n      - traefik.http.services.n8n.loadbalancer.server.port=5678\\n    restart: unless-stopped\\n    deploy:\\n      resources:\\n        limits:\\n          cpus: '2.0'\\n          memory: 1G\\n        reservations:\\n          memory: 512M\\n    healthcheck:\\n      test: [\\\"CMD\\\", \\\"wget\\\", \\\"--spider\\\", \\\"-q\\\", \\\"http://localhost:5678/healthz\\\"]\\n      interval: 30s\\n      timeout: 10s\\n      retries: 3\\n      start_period: 60s\\nvolumes:\\n  data:\\n    driver: local\",\n  \"prune\": true,\n  \"pullImage\": true\n}",
+        "options": {}
       },
-      "type": "n8n-nodes-portainer.portainer",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
       "position": [
-        1168,
-        368
+        1568,
+        80
       ],
-      "id": "d1437fae-3bc8-4647-9f0b-3eeb269403c3",
-      "name": "Pull Image",
+      "id": "122a77fe-27d7-468e-a2a4-a5baeb8e102b",
+      "name": "HTTP Request",
       "credentials": {
         "portainerApi": {
           "id": "BpUkwsej2cQrpjvR",
           "name": "Portainer account"
         }
       }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        1136,
+        320
+      ],
+      "id": "f922f648-27e1-4bb0-949e-055a3452bb96",
+      "name": "Manual Update Trigger"
     }
   ],
   "origin": "n8n",
@@ -331,6 +368,6 @@
     }
   ],
   "triggerCount": 0,
-  "updatedAt": "2025-11-30T01:11:37.000Z",
-  "versionId": "76bc3d6e-3be2-4a0d-9502-d8e6941e626f"
+  "updatedAt": "2025-12-02T19:54:04.000Z",
+  "versionId": "f3a2248b-366c-4c37-b5df-02581798f235"
 }
