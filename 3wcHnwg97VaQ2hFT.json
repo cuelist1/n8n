@@ -1,7 +1,347 @@
 {
-  "active": false,
-  "activeVersion": null,
-  "activeVersionId": null,
+  "active": true,
+  "activeVersion": {
+    "updatedAt": "2025-12-05T16:33:41.951Z",
+    "createdAt": "2025-12-05T16:33:41.951Z",
+    "versionId": "c0e3495a-c392-471e-a22f-f9d05dae2e34",
+    "workflowId": "3wcHnwg97VaQ2hFT",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "hours",
+                "hoursInterval": 16,
+                "triggerAtMinute": 8
+              }
+            ]
+          }
+        },
+        "id": "9e84e05b-a837-4e91-a01c-f419449da3ea",
+        "name": "Schedule Trigger",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "position": [
+          32,
+          96
+        ],
+        "typeVersion": 1.2
+      },
+      {
+        "parameters": {
+          "url": "https://registry.npmjs.org/n8n/latest",
+          "options": {
+            "fullResponse": false
+          }
+        },
+        "id": "3d45b878-5d80-4bfb-ac34-2eb8dd94f2d6",
+        "name": "Get the latest n8n version",
+        "type": "n8n-nodes-base.httpRequest",
+        "position": [
+          256,
+          96
+        ],
+        "typeVersion": 2
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "version": 2,
+              "leftValue": "",
+              "caseSensitive": true,
+              "typeValidation": "strict"
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "a2d169a3-7aa2-46f5-bdb2-f0d53a011b5c",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEquals"
+                },
+                "leftValue": "={{ $('Get the latest n8n version').item.json.version }}",
+                "rightValue": "={{ $json.versionCli }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "1dca2ad8-ae28-44d4-850c-1b27c6ce5e4b",
+        "name": "If",
+        "type": "n8n-nodes-base.if",
+        "position": [
+          976,
+          96
+        ],
+        "typeVersion": 2.2,
+        "alwaysOutputData": false
+      },
+      {
+        "parameters": {
+          "jsCode": "const text = $input.first().json.data;\nconst match = text.match(/n8n_version_info\\{[^}]*version=\"(v[\\d.]+)\"/);\n\nif (match) {\n  const version = match[1].replace(/^v/, ''); // v entfernen\n  return [{ json: { versionCli: version } }];\n} else {\n  throw new Error(\"Version info not found in metrics output\");\n}\n"
+        },
+        "id": "4fae51dc-c964-4a57-b931-5f276e9b09aa",
+        "name": "local n8n version",
+        "type": "n8n-nodes-base.code",
+        "position": [
+          752,
+          96
+        ],
+        "typeVersion": 2
+      },
+      {
+        "parameters": {
+          "content": "## Cron\nEvery 16 Hours at minute 8",
+          "height": 272,
+          "width": 160
+        },
+        "id": "14e4f7dc-d0a3-4555-a45b-8d88c44ad805",
+        "name": "Sticky Note",
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          0,
+          0
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "content": "## Latest Version\nFetch from npmjs",
+          "height": 272,
+          "width": 208
+        },
+        "id": "11353596-cfba-4fc9-9a38-6086e28ec238",
+        "name": "Sticky Note1",
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          192,
+          0
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "content": "## Get Metrics\nFetch from local install",
+          "height": 272,
+          "width": 224
+        },
+        "id": "f4e660e8-b6e6-4908-a146-47abab251648",
+        "name": "Sticky Note2",
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          432,
+          0
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "url": "http://192.168.10.100:5678/metrics",
+          "options": {
+            "allowUnauthorizedCerts": true
+          }
+        },
+        "id": "3608e716-2f75-42a4-958b-3856c3da4201",
+        "name": "Get local n8n metrics",
+        "type": "n8n-nodes-base.httpRequest",
+        "position": [
+          480,
+          96
+        ],
+        "typeVersion": 4.2
+      },
+      {
+        "parameters": {
+          "content": "## Installed Version\nExtract from metrics",
+          "height": 272,
+          "width": 224
+        },
+        "id": "2a49844e-1d96-4a2e-8491-6d19181973ce",
+        "name": "Sticky Note3",
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          688,
+          0
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "content": "## If Update available\nProceed with the workflow",
+          "height": 272,
+          "width": 256
+        },
+        "id": "d7aeee7c-0914-451b-89c4-9dcaef6f38df",
+        "name": "Sticky Note4",
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          944,
+          0
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "content": "## Start Update\nUsing Portainer Api",
+          "height": 272,
+          "width": 544
+        },
+        "id": "dd4c7087-22fd-4c7f-b6d3-d3ca2451002f",
+        "name": "Sticky Note5",
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          1232,
+          0
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "resource": "stacks",
+          "operation": "get",
+          "environmentId": "2",
+          "stackId": "117",
+          "requestOptions": {}
+        },
+        "name": "Get Stack",
+        "type": "n8n-nodes-portainer.portainer",
+        "typeVersion": 1,
+        "position": [
+          1312,
+          80
+        ],
+        "id": "3aea56aa-ea81-47d2-91cf-8b5298da8313",
+        "credentials": {
+          "portainerApi": {
+            "id": "BpUkwsej2cQrpjvR",
+            "name": "Portainer account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "PUT",
+          "url": "http://192.168.10.100:9000/api/stacks/117?endpointId=2",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "portainerApi",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"stackFileContent\": \"---\\nservices:\\n  n8n:\\n    image: n8nio/n8n:latest\\n    platform: linux/arm64\\n    container_name: n8n-test-1\\n    environment:\\n      - N8N_METRICS=true\\n      - N8N_METRICS_INCLUDE_QUEUE_METRICS=true\\n      - NODE_OPTIONS=--max-old-space-size=512\\n      - EXECUTIONS_DATA_PRUNE=true\\n      - EXECUTIONS_DATA_MAX_AGE=168\\n      - N8N_HIRING_BANNER_ENABLED=false\\n      - N8N_LOG_LEVEL=warn\\n      - GENERIC_TIMEZONE=America/New_York\\n      - TZ=America/New_York\\n      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true\\n      - N8N_RUNNERS_ENABLED=true\\n      - N8N_SECURE_COOKIE=false\\n      - N8N_EDITOR_BASE_URL=http://n8n.210parklab.org:5678\\n    volumes:\\n      - /etc/localtime:/etc/localtime:ro\\n      - data:/home/node/.n8n\\n    ports:\\n      - \\\"5678:5678\\\"\\n    labels:\\n      - traefik.enable=true\\n      - traefik.http.routers.n8n.rule=Host(`n8n.210parklab.org`)\\n      - traefik.http.routers.n8n.entrypoints=websecure\\n      - traefik.http.routers.n8n.tls=true\\n      - traefik.http.routers.n8n.tls.certresolver=${TRAEFIK_CERTRESOLVER:-le}\\n      - traefik.http.services.n8n.loadbalancer.server.port=5678\\n    restart: unless-stopped\\n    deploy:\\n      resources:\\n        limits:\\n          cpus: '2.0'\\n          memory: 1G\\n        reservations:\\n          memory: 512M\\n    healthcheck:\\n      test: [\\\"CMD\\\", \\\"wget\\\", \\\"--spider\\\", \\\"-q\\\", \\\"http://localhost:5678/healthz\\\"]\\n      interval: 30s\\n      timeout: 10s\\n      retries: 3\\n      start_period: 60s\\nvolumes:\\n  data:\\n    driver: local\",\n  \"prune\": true,\n  \"pullImage\": true\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          1568,
+          80
+        ],
+        "id": "122a77fe-27d7-468e-a2a4-a5baeb8e102b",
+        "name": "HTTP Request",
+        "credentials": {
+          "portainerApi": {
+            "id": "BpUkwsej2cQrpjvR",
+            "name": "Portainer account"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          1136,
+          320
+        ],
+        "id": "f922f648-27e1-4bb0-949e-055a3452bb96",
+        "name": "Manual Update Trigger"
+      }
+    ],
+    "connections": {
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Get Stack",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Get the latest n8n version",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "local n8n version": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get local n8n metrics": {
+        "main": [
+          [
+            {
+              "node": "local n8n version",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get the latest n8n version": {
+        "main": [
+          [
+            {
+              "node": "Get local n8n metrics",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get Stack": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Manual Update Trigger": {
+        "main": [
+          [
+            {
+              "node": "Get Stack",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Salvador Solis",
+    "name": null,
+    "description": null
+  },
+  "activeVersionId": "c0e3495a-c392-471e-a22f-f9d05dae2e34",
   "connections": {
     "If": {
       "main": [
@@ -326,7 +666,8 @@
           "id": "BpUkwsej2cQrpjvR",
           "name": "Portainer account"
         }
-      }
+      },
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {},
@@ -358,7 +699,13 @@
       "projectId": "HsyJ6yHtqhe804oj"
     }
   ],
-  "staticData": null,
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": [
+        16
+      ]
+    }
+  },
   "tags": [
     {
       "updatedAt": "2025-11-30T01:11:00.612Z",
@@ -367,7 +714,7 @@
       "name": "DevOps"
     }
   ],
-  "triggerCount": 0,
-  "updatedAt": "2025-12-02T19:54:04.000Z",
-  "versionId": "f3a2248b-366c-4c37-b5df-02581798f235"
+  "triggerCount": 1,
+  "updatedAt": "2025-12-05T16:33:42.000Z",
+  "versionId": "c0e3495a-c392-471e-a22f-f9d05dae2e34"
 }
