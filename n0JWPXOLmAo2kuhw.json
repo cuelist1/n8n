@@ -1,9 +1,9 @@
 {
   "active": true,
   "activeVersion": {
-    "updatedAt": "2025-12-03T03:09:00.374Z",
-    "createdAt": "2025-12-03T03:09:00.374Z",
-    "versionId": "dc939218-c26f-4d17-8d4d-ffab407d1cf3",
+    "updatedAt": "2025-12-09T01:48:21.934Z",
+    "createdAt": "2025-12-09T01:48:21.934Z",
+    "versionId": "8f3cc1ab-7a21-4ea8-a80c-b0fe21ce75b3",
     "workflowId": "n0JWPXOLmAo2kuhw",
     "nodes": [
       {
@@ -270,7 +270,9 @@
           "subject": "=🚨 New OpenEMR Update/Patch Announced!",
           "emailFormat": "html",
           "html": "=<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }\n    .container { max-width: 600px; margin: 0 auto; padding: 20px; }\n    .header { background-color: #0066cc; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }\n    .content { background-color: #f9f9f9; padding: 20px; border: 1px solid #ddd; border-radius: 0 0 5px 5px; }\n    .post-info { background-color: white; padding: 15px; margin: 15px 0; border-left: 4px solid #0066cc; }\n    .button { display: inline-block; padding: 12px 24px; background-color: #0066cc; color: white; text-decoration: none; border-radius: 5px; margin: 10px 0; }\n    .timestamp { color: #666; font-size: 0.9em; }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n      <h1>🚨 New OpenEMR Update!</h1>\n    </div>\n    <div class=\"content\">\n      <div class=\"post-info\">\n        <h2>{{ $json.title }}</h2>\n        <p class=\"timestamp\"><strong>Published:</strong> {{ $json.pubDate }}</p>\n        <div style=\"margin: 20px 0; padding: 15px; background-color: #f0f0f0; border-radius: 5px;\">\n          {{ $json.content.substring(0, 500) }}...\n        </div>\n      </div>\n      \n      <center>\n        <a href=\"{{ $json.link }}\" class=\"button\">Read Full Post</a>\n        <br><br>\n        <a href=\"https://www.open-emr.org/wiki/index.php/OpenEMR_Patches\" class=\"button\" style=\"background-color: #28a745;\">View All Patches</a>\n      </center>\n      \n      <p style=\"margin-top: 20px; font-size: 0.9em; color: #666;\">\n        This is an automated notification from your n8n OpenEMR Monitor.<br>\n        <strong>Previous GUID:</strong> {{ $json.previousGuid || 'None (first run)' }}<br>\n        <strong>Current GUID:</strong> {{ $json.currentGuid }}\n      </p>\n    </div>\n  </div>\n</body>\n</html>",
-          "options": {}
+          "options": {
+            "allowUnauthorizedCerts": false
+          }
         },
         "name": "Send Email Alert1",
         "type": "n8n-nodes-base.emailSend",
@@ -497,7 +499,7 @@
     "name": null,
     "description": null
   },
-  "activeVersionId": "dc939218-c26f-4d17-8d4d-ffab407d1cf3",
+  "activeVersionId": "8f3cc1ab-7a21-4ea8-a80c-b0fe21ce75b3",
   "connections": {
     "Fetch OpenEMR RSS Feed": {
       "main": [
@@ -936,7 +938,9 @@
         "subject": "=🚨 New OpenEMR Update/Patch Announced!",
         "emailFormat": "html",
         "html": "=<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }\n    .container { max-width: 600px; margin: 0 auto; padding: 20px; }\n    .header { background-color: #0066cc; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }\n    .content { background-color: #f9f9f9; padding: 20px; border: 1px solid #ddd; border-radius: 0 0 5px 5px; }\n    .post-info { background-color: white; padding: 15px; margin: 15px 0; border-left: 4px solid #0066cc; }\n    .button { display: inline-block; padding: 12px 24px; background-color: #0066cc; color: white; text-decoration: none; border-radius: 5px; margin: 10px 0; }\n    .timestamp { color: #666; font-size: 0.9em; }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n      <h1>🚨 New OpenEMR Update!</h1>\n    </div>\n    <div class=\"content\">\n      <div class=\"post-info\">\n        <h2>{{ $json.title }}</h2>\n        <p class=\"timestamp\"><strong>Published:</strong> {{ $json.pubDate }}</p>\n        <div style=\"margin: 20px 0; padding: 15px; background-color: #f0f0f0; border-radius: 5px;\">\n          {{ $json.content.substring(0, 500) }}...\n        </div>\n      </div>\n      \n      <center>\n        <a href=\"{{ $json.link }}\" class=\"button\">Read Full Post</a>\n        <br><br>\n        <a href=\"https://www.open-emr.org/wiki/index.php/OpenEMR_Patches\" class=\"button\" style=\"background-color: #28a745;\">View All Patches</a>\n      </center>\n      \n      <p style=\"margin-top: 20px; font-size: 0.9em; color: #666;\">\n        This is an automated notification from your n8n OpenEMR Monitor.<br>\n        <strong>Previous GUID:</strong> {{ $json.previousGuid || 'None (first run)' }}<br>\n        <strong>Current GUID:</strong> {{ $json.currentGuid }}\n      </p>\n    </div>\n  </div>\n</body>\n</html>",
-        "options": {}
+        "options": {
+          "allowUnauthorizedCerts": false
+        }
       },
       "name": "Send Email Alert1",
       "type": "n8n-nodes-base.emailSend",
@@ -1017,7 +1021,7 @@
   "staticData": {
     "node:Check Every 2 Days": {
       "recurrenceRules": [
-        341
+        343
       ]
     },
     "node:Check Every 12 Hours": {
@@ -1033,6 +1037,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2025-12-03T03:09:00.000Z",
-  "versionId": "dc939218-c26f-4d17-8d4d-ffab407d1cf3"
+  "updatedAt": "2025-12-09T01:48:21.000Z",
+  "versionId": "8f3cc1ab-7a21-4ea8-a80c-b0fe21ce75b3"
 }
