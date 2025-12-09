@@ -1,9 +1,9 @@
 {
   "active": true,
   "activeVersion": {
-    "updatedAt": "2025-12-05T16:33:41.951Z",
-    "createdAt": "2025-12-05T16:33:41.951Z",
-    "versionId": "c0e3495a-c392-471e-a22f-f9d05dae2e34",
+    "updatedAt": "2025-12-09T01:30:46.047Z",
+    "createdAt": "2025-12-09T01:30:46.047Z",
+    "versionId": "dc38c01b-06a5-47aa-b471-53fcec91b572",
     "workflowId": "3wcHnwg97VaQ2hFT",
     "nodes": [
       {
@@ -238,6 +238,9 @@
         ],
         "id": "122a77fe-27d7-468e-a2a4-a5baeb8e102b",
         "name": "HTTP Request",
+        "retryOnFail": true,
+        "maxTries": 5,
+        "waitBetweenTries": 5000,
         "credentials": {
           "portainerApi": {
             "id": "BpUkwsej2cQrpjvR",
@@ -341,7 +344,7 @@
     "name": null,
     "description": null
   },
-  "activeVersionId": "c0e3495a-c392-471e-a22f-f9d05dae2e34",
+  "activeVersionId": "dc38c01b-06a5-47aa-b471-53fcec91b572",
   "connections": {
     "If": {
       "main": [
@@ -661,6 +664,9 @@
       ],
       "id": "122a77fe-27d7-468e-a2a4-a5baeb8e102b",
       "name": "HTTP Request",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
       "credentials": {
         "portainerApi": {
           "id": "BpUkwsej2cQrpjvR",
@@ -715,6 +721,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2025-12-05T16:33:42.000Z",
-  "versionId": "c0e3495a-c392-471e-a22f-f9d05dae2e34"
+  "updatedAt": "2025-12-09T01:30:46.000Z",
+  "versionId": "dc38c01b-06a5-47aa-b471-53fcec91b572"
 }
