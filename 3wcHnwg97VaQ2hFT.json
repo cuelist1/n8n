@@ -1,9 +1,9 @@
 {
   "active": true,
   "activeVersion": {
-    "updatedAt": "2025-12-09T01:30:46.047Z",
-    "createdAt": "2025-12-09T01:30:46.047Z",
-    "versionId": "dc38c01b-06a5-47aa-b471-53fcec91b572",
+    "updatedAt": "2025-12-10T00:30:15.185Z",
+    "createdAt": "2025-12-10T00:30:15.185Z",
+    "versionId": "b511d407-a1e7-4a3f-8ddb-fbc4fbc3610c",
     "workflowId": "3wcHnwg97VaQ2hFT",
     "nodes": [
       {
@@ -146,7 +146,7 @@
         "name": "Get local n8n metrics",
         "type": "n8n-nodes-base.httpRequest",
         "position": [
-          480,
+          496,
           96
         ],
         "typeVersion": 4.2
@@ -238,16 +238,18 @@
         ],
         "id": "122a77fe-27d7-468e-a2a4-a5baeb8e102b",
         "name": "HTTP Request",
-        "retryOnFail": true,
+        "retryOnFail": false,
         "maxTries": 5,
         "waitBetweenTries": 5000,
+        "notesInFlow": true,
         "credentials": {
           "portainerApi": {
             "id": "BpUkwsej2cQrpjvR",
             "name": "Portainer account"
           }
         },
-        "onError": "continueErrorOutput"
+        "onError": "continueRegularOutput",
+        "notes": "Server restarts when the last node executes. connection lost."
       },
       {
         "parameters": {},
@@ -344,7 +346,7 @@
     "name": null,
     "description": null
   },
-  "activeVersionId": "dc38c01b-06a5-47aa-b471-53fcec91b572",
+  "activeVersionId": "b511d407-a1e7-4a3f-8ddb-fbc4fbc3610c",
   "connections": {
     "If": {
       "main": [
@@ -572,7 +574,7 @@
       "name": "Get local n8n metrics",
       "type": "n8n-nodes-base.httpRequest",
       "position": [
-        480,
+        496,
         96
       ],
       "typeVersion": 4.2
@@ -664,16 +666,18 @@
       ],
       "id": "122a77fe-27d7-468e-a2a4-a5baeb8e102b",
       "name": "HTTP Request",
-      "retryOnFail": true,
+      "retryOnFail": false,
       "maxTries": 5,
       "waitBetweenTries": 5000,
+      "notesInFlow": true,
       "credentials": {
         "portainerApi": {
           "id": "BpUkwsej2cQrpjvR",
           "name": "Portainer account"
         }
       },
-      "onError": "continueErrorOutput"
+      "onError": "continueRegularOutput",
+      "notes": "Server restarts when the last node executes. connection lost."
     },
     {
       "parameters": {},
@@ -721,6 +725,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2025-12-09T01:30:46.000Z",
-  "versionId": "dc38c01b-06a5-47aa-b471-53fcec91b572"
+  "updatedAt": "2025-12-10T00:30:15.179Z",
+  "versionId": "b511d407-a1e7-4a3f-8ddb-fbc4fbc3610c"
 }
