@@ -1,0 +1,245 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "Cron": {
+      "main": [
+        [
+          {
+            "node": "Fetch Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Page": {
+      "main": [
+        [
+          {
+            "node": "Extract Patches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Patches": {
+      "main": [
+        [
+          {
+            "node": "Compare Patches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compare Patches": {
+      "main": [
+        [
+          {
+            "node": "Check New Patches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check New Patches": {
+      "main": [
+        [
+          {
+            "node": "Summarize Changes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize Changes": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-12-10T20:35:36.454Z",
+  "id": "llxHjR7Ol2EQZ4Ry",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "EMRpatch test",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 6
+            }
+          ]
+        }
+      },
+      "name": "Cron",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        -1008,
+        64
+      ],
+      "id": "223cc6ad-13f0-4c38-b7d0-c3860bd5887e"
+    },
+    {
+      "parameters": {
+        "url": "https://www.open-emr.org/wiki/index.php/OpenEMR_Patches",
+        "responseFormat": "string",
+        "options": {}
+      },
+      "name": "Fetch Page",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        64
+      ],
+      "id": "c9a62051-8088-45fe-8e88-30cfa7145553"
+    },
+    {
+      "parameters": {
+        "functionCode": "const cheerio = require('cheerio');\nconst $ = cheerio.load(items[0].json.data);\n\nconst patches = [];\n$('#mw-content-text ul li').each((i, el) => {\n  const text = $(el).text().trim();\n  const match = text.match(/Patch\\s+(\\d+(?:\\.\\d+)+).*?(\\w+\\s+\\d{4})/i);\n  if (match) {\n    patches.push({ version: match[1], date: match[2] });\n  }\n});\n\nreturn [{ json: { patches } }];"
+      },
+      "name": "Extract Patches",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -608,
+        64
+      ],
+      "id": "5a927530-5f57-4c76-ac99-cf7d047e9df0"
+    },
+    {
+      "parameters": {},
+      "name": "Load Stored Patches",
+      "type": "n8n-nodes-base.dataStore",
+      "typeVersion": 1,
+      "position": [
+        -608,
+        208
+      ],
+      "id": "2812c49a-3a3a-4d35-93c6-28fdc237ec28"
+    },
+    {
+      "parameters": {
+        "functionCode": "const current = $json[\"patches\"];\nconst previous = $json[\"value\"] ? JSON.parse($json[\"value\"]) : [];\n\nconst prevVersions = previous.map(p => p.version);\nconst newPatches = current.filter(p => !prevVersions.includes(p.version));\n\nreturn [{ json: { newPatches, storedPatches: current } }];"
+      },
+      "name": "Compare Patches",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        64
+      ],
+      "id": "1d80763f-ce9d-4927-b315-560c19ca1775"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"newPatches\"].length}}",
+              "operation": "notEqual",
+              "value2": "0"
+            }
+          ]
+        }
+      },
+      "name": "Check New Patches",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        64
+      ],
+      "id": "d25c2384-3462-42f9-a596-31273c94f07a"
+    },
+    {
+      "parameters": {
+        "functionCode": "const newPatches = $json[\"newPatches\"];\n\nlet summary = \"New OpenEMR patches detected:\\n\\n\";\nnewPatches.forEach(p => {\n  summary += `- Version ${p.version} (released ${p.date})\\n`;\n});\nsummary += \"\\nSee details: https://www.open-emr.org/wiki/index.php/OpenEMR_Patches\";\n\nreturn [{ json: { summary } }];"
+      },
+      "name": "Summarize Changes",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "1426df6b-d95e-497c-abbf-011d919fba0b"
+    },
+    {
+      "parameters": {
+        "fromEmail": "your@email.com",
+        "toEmail": "notify@email.com",
+        "subject": "OpenEMR Patch Update Detected",
+        "text": "={{$json[\"summary\"]}}",
+        "options": {}
+      },
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "9abce619-bb70-4998-b41f-1d9acdfda731",
+      "credentials": {
+        "smtp": {
+          "id": "MPO0IAoPscy8ZRK9",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "name": "Update Stored Patches",
+      "type": "n8n-nodes-base.dataStore",
+      "typeVersion": 1,
+      "position": [
+        0,
+        176
+      ],
+      "id": "3b57040d-2d88-418b-b547-a1518caef768"
+    }
+  ],
+  "origin": "n8n",
+  "pinData": {},
+  "repo": {
+    "owner": "cuelist1",
+    "name": "n8n"
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "updatedAt": "2025-12-10T20:35:36.470Z",
+      "createdAt": "2025-12-10T20:35:36.470Z",
+      "role": "workflow:owner",
+      "workflowId": "llxHjR7Ol2EQZ4Ry",
+      "projectId": "HsyJ6yHtqhe804oj"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-12-10T20:42:36.386Z",
+  "versionId": "9c2848d2-44b3-4c6a-96f3-9d5326c9164e"
+}
