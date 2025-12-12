@@ -1,9 +1,9 @@
 {
   "active": true,
   "activeVersion": {
-    "updatedAt": "2025-12-09T01:48:21.934Z",
-    "createdAt": "2025-12-09T01:48:21.934Z",
-    "versionId": "8f3cc1ab-7a21-4ea8-a80c-b0fe21ce75b3",
+    "updatedAt": "2025-12-11T14:29:44.691Z",
+    "createdAt": "2025-12-11T14:29:44.691Z",
+    "versionId": "b242a4ca-fbcc-42c0-b79f-8bf59c8d7a65",
     "workflowId": "n0JWPXOLmAo2kuhw",
     "nodes": [
       {
@@ -327,6 +327,29 @@
         ],
         "id": "d3b2507d-ed1f-4285-bc4c-44a133679e08",
         "name": "When clicking ‘Execute workflow’"
+      },
+      {
+        "parameters": {
+          "fromEmail": "no-reply@1412studios.com",
+          "toEmail": "cuelist@icloud.com",
+          "subject": "OpenEMR Patch Update Detected",
+          "text": "={{$json[\"summary\"]}}",
+          "options": {}
+        },
+        "name": "Send Email",
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 1,
+        "position": [
+          -1056,
+          752
+        ],
+        "id": "811cd438-d95b-4e43-a073-5130e3dad4e5",
+        "credentials": {
+          "smtp": {
+            "id": "oKTh0H4GdyNB9NG2",
+            "name": "Gmail SMTP account"
+          }
+        }
       }
     ],
     "connections": {
@@ -384,11 +407,6 @@
             },
             {
               "node": "Prepare State Data",
-              "type": "main",
-              "index": 0
-            },
-            {
-              "node": "Send Email Alert1",
               "type": "main",
               "index": 0
             }
@@ -499,7 +517,7 @@
     "name": null,
     "description": null
   },
-  "activeVersionId": "8f3cc1ab-7a21-4ea8-a80c-b0fe21ce75b3",
+  "activeVersionId": "b242a4ca-fbcc-42c0-b79f-8bf59c8d7a65",
   "connections": {
     "Fetch OpenEMR RSS Feed": {
       "main": [
@@ -555,11 +573,6 @@
           },
           {
             "node": "Prepare State Data",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Send Email Alert1",
             "type": "main",
             "index": 0
           }
@@ -995,6 +1008,29 @@
       ],
       "id": "d3b2507d-ed1f-4285-bc4c-44a133679e08",
       "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "fromEmail": "no-reply@1412studios.com",
+        "toEmail": "cuelist@icloud.com",
+        "subject": "OpenEMR Patch Update Detected",
+        "text": "={{$json[\"summary\"]}}",
+        "options": {}
+      },
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        -1056,
+        752
+      ],
+      "id": "811cd438-d95b-4e43-a073-5130e3dad4e5",
+      "credentials": {
+        "smtp": {
+          "id": "oKTh0H4GdyNB9NG2",
+          "name": "Gmail SMTP account"
+        }
+      }
     }
   ],
   "origin": "n8n",
@@ -1037,6 +1073,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2025-12-09T01:48:21.000Z",
-  "versionId": "8f3cc1ab-7a21-4ea8-a80c-b0fe21ce75b3"
+  "updatedAt": "2025-12-11T14:29:44.686Z",
+  "versionId": "b242a4ca-fbcc-42c0-b79f-8bf59c8d7a65"
 }
