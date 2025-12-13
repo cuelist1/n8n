@@ -1057,7 +1057,7 @@
   "staticData": {
     "node:Check Every 2 Days": {
       "recurrenceRules": [
-        345
+        347
       ]
     },
     "node:Check Every 12 Hours": {
