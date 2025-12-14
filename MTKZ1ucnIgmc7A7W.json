@@ -1,0 +1,35 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {},
+  "createdAt": "2025-12-14T17:08:45.615Z",
+  "id": "MTKZ1ucnIgmc7A7W",
+  "isArchived": false,
+  "meta": null,
+  "name": "Github Backup Sha Fixed",
+  "nodes": [],
+  "origin": "n8n",
+  "pinData": {},
+  "repo": {
+    "owner": "cuelist1",
+    "name": "n8n"
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "updatedAt": "2025-12-14T17:08:45.634Z",
+      "createdAt": "2025-12-14T17:08:45.634Z",
+      "role": "workflow:owner",
+      "workflowId": "MTKZ1ucnIgmc7A7W",
+      "projectId": "HsyJ6yHtqhe804oj"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-12-14T17:08:45.615Z",
+  "versionId": "60850980-305b-4b3d-be81-f176b59c586a"
+}
