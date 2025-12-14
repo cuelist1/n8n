@@ -1,0 +1,448 @@
+{
+  "updatedAt": "2025-12-14T17:41:36.530Z",
+  "createdAt": "2025-12-14T17:08:45.615Z",
+  "id": "MTKZ1ucnIgmc7A7W",
+  "name": "Simple GitHub Backup",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "id": "336e5559-39d0-4cad-8284-bb351f47a36d",
+      "name": "Schedule Daily at 7am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        1072,
+        3040
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "15f286ec-0c20-4efe-8f6e-fe18705414bb",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        1072,
+        3232
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "github_owner",
+              "type": "string",
+              "value": "cuelist1"
+            },
+            {
+              "id": "2",
+              "name": "github_repo",
+              "type": "string",
+              "value": "n8n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ad313177-70a7-4741-9c58-bd7ad502c46e",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1296,
+        3136
+      ],
+      "notes": "Edit your GitHub username and repo name here"
+    },
+    {
+      "parameters": {
+        "filters": {},
+        "requestOptions": {}
+      },
+      "id": "91156bed-5b61-4b45-afd8-23dec4aef664",
+      "name": "Get All Workflows",
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        1520,
+        3136
+      ],
+      "credentials": {
+        "n8nApi": {
+          "id": "6GGuXl4bI8fmAaTZ",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get config from previous node\nconst github_owner = $('Config').first().json.github_owner;\nconst github_repo = $('Config').first().json.github_repo;\n\n// For each workflow, create the GitHub file content\nconst items = [];\n\nfor (const item of $input.all()) {\n  const workflow = item.json;\n  \n  items.push({\n    json: {\n      workflow_id: workflow.id,\n      workflow_name: workflow.name,\n      github_owner: github_owner,\n      github_repo: github_repo,\n      file_path: `${workflow.id}.json`,\n      file_content: JSON.stringify(workflow, null, 2)\n    }\n  });\n}\n\nreturn items;"
+      },
+      "id": "b45ce00f-74da-4de9-8191-27c26dd32e3b",
+      "name": "Prepare Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1744,
+        3136
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{ $json.github_owner }}"
+        },
+        "repository": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{ $json.github_repo }}"
+        },
+        "filePath": "={{ $json.file_path }}",
+        "asBinaryProperty": false,
+        "additionalParameters": {}
+      },
+      "id": "d71a544f-c991-4dc1-957c-044084d67644",
+      "name": "Get Existing File",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        1952,
+        3136
+      ],
+      "alwaysOutputData": true,
+      "webhookId": "ae5e0d1d-7a62-4f6e-8bb6-2f7eb620e320",
+      "credentials": {
+        "githubApi": {
+          "id": "BtzYzYVmaJFk1wWn",
+          "name": "GitHub account"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.sha }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8753888a-e666-4e4f-a5a1-477e853106b3",
+      "name": "File Exists?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2176,
+        3136
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the original data from Prepare Data node\nconst preparedData = $('Prepare Data').item.json;\nconst githubResponse = $input.first().json;\n\n// File exists - check if content is different\nconst existingContent = Buffer.from(githubResponse.content, 'base64').toString('utf8');\nconst newContent = preparedData.file_content;\n\nif (existingContent === newContent) {\n  return [{ json: { \n    workflow_id: preparedData.workflow_id,\n    workflow_name: preparedData.workflow_name,\n    github_owner: preparedData.github_owner,\n    github_repo: preparedData.github_repo,\n    file_path: preparedData.file_path,\n    file_content: preparedData.file_content,\n    action: 'skip', \n    message: 'No changes' \n  } }];\n} else {\n  return [{ json: { \n    workflow_id: preparedData.workflow_id,\n    workflow_name: preparedData.workflow_name,\n    github_owner: preparedData.github_owner,\n    github_repo: preparedData.github_repo,\n    file_path: preparedData.file_path,\n    file_content: preparedData.file_content,\n    action: 'update', \n    sha: githubResponse.sha \n  } }];\n}"
+      },
+      "id": "89927111-0678-4755-838b-a2eb9b016e65",
+      "name": "Check if Changed",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        3024
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "update",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "update"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "skip",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "skip"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "401793df-c308-4474-9ab9-336f33d737fe",
+      "name": "Switch Action",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        2624,
+        3024
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "edit",
+        "owner": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{ $json.github_owner }}"
+        },
+        "repository": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{ $json.github_repo }}"
+        },
+        "filePath": "={{ $json.file_path }}",
+        "fileContent": "={{ $json.file_content }}",
+        "commitMessage": "Update: {{ $json.workflow_name }}"
+      },
+      "id": "5e5b3c28-6cb1-4c56-9d05-9b4f00ad0108",
+      "name": "Update File",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        2832,
+        2960
+      ],
+      "webhookId": "e5804454-1654-4df7-a952-539fa3687e63",
+      "credentials": {
+        "githubApi": {
+          "id": "BtzYzYVmaJFk1wWn",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "64d7fd4e-5cf2-45dd-9f83-134fdf856227",
+      "name": "Skip - No Changes",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2832,
+        3088
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{ $json.github_owner }}"
+        },
+        "repository": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{ $json.github_repo }}"
+        },
+        "filePath": "={{ $json.file_path }}",
+        "fileContent": "={{ $json.file_content }}",
+        "commitMessage": "Create: {{ $json.workflow_name }}"
+      },
+      "id": "b11df1ba-f8f6-47f9-93eb-7fc2a8ba10a6",
+      "name": "Create New File",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        2400,
+        3248
+      ],
+      "webhookId": "35679d68-5c37-4827-8e8e-cff345fdaeee",
+      "credentials": {
+        "githubApi": {
+          "id": "BtzYzYVmaJFk1wWn",
+          "name": "GitHub account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Daily at 7am": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Get All Workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Workflows": {
+      "main": [
+        [
+          {
+            "node": "Prepare Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Data": {
+      "main": [
+        [
+          {
+            "node": "Get Existing File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Existing File": {
+      "main": [
+        [
+          {
+            "node": "File Exists?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "File Exists?": {
+      "main": [
+        [
+          {
+            "node": "Check if Changed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create New File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if Changed": {
+      "main": [
+        [
+          {
+            "node": "Switch Action",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Action": {
+      "main": [
+        [
+          {
+            "node": "Update File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Skip - No Changes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "1d59c5e7-18a1-496b-afb4-4af59b8f4e57",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-12-14T17:08:45.634Z",
+      "createdAt": "2025-12-14T17:08:45.634Z",
+      "role": "workflow:owner",
+      "workflowId": "MTKZ1ucnIgmc7A7W",
+      "projectId": "HsyJ6yHtqhe804oj"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
