@@ -1,9 +1,9 @@
 {
   "active": true,
   "activeVersion": {
-    "updatedAt": "2025-12-10T00:30:15.185Z",
-    "createdAt": "2025-12-10T00:30:15.185Z",
-    "versionId": "b511d407-a1e7-4a3f-8ddb-fbc4fbc3610c",
+    "updatedAt": "2025-12-14T01:13:26.628Z",
+    "createdAt": "2025-12-14T01:13:26.628Z",
+    "versionId": "6d737e5e-c925-4aaf-a5a7-599e782fc17b",
     "workflowId": "3wcHnwg97VaQ2hFT",
     "nodes": [
       {
@@ -199,9 +199,7 @@
       {
         "parameters": {
           "resource": "stacks",
-          "operation": "get",
           "environmentId": "2",
-          "stackId": "117",
           "requestOptions": {}
         },
         "name": "Get Stack",
@@ -227,8 +225,10 @@
           "nodeCredentialType": "portainerApi",
           "sendBody": true,
           "specifyBody": "json",
-          "jsonBody": "={\n  \"stackFileContent\": \"---\\nservices:\\n  n8n:\\n    image: n8nio/n8n:latest\\n    platform: linux/arm64\\n    container_name: n8n-test-1\\n    environment:\\n      - N8N_METRICS=true\\n      - N8N_METRICS_INCLUDE_QUEUE_METRICS=true\\n      - NODE_OPTIONS=--max-old-space-size=512\\n      - EXECUTIONS_DATA_PRUNE=true\\n      - EXECUTIONS_DATA_MAX_AGE=168\\n      - N8N_HIRING_BANNER_ENABLED=false\\n      - N8N_LOG_LEVEL=warn\\n      - GENERIC_TIMEZONE=America/New_York\\n      - TZ=America/New_York\\n      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true\\n      - N8N_RUNNERS_ENABLED=true\\n      - N8N_SECURE_COOKIE=false\\n      - N8N_EDITOR_BASE_URL=http://n8n.210parklab.org:5678\\n    volumes:\\n      - /etc/localtime:/etc/localtime:ro\\n      - data:/home/node/.n8n\\n    ports:\\n      - \\\"5678:5678\\\"\\n    labels:\\n      - traefik.enable=true\\n      - traefik.http.routers.n8n.rule=Host(`n8n.210parklab.org`)\\n      - traefik.http.routers.n8n.entrypoints=websecure\\n      - traefik.http.routers.n8n.tls=true\\n      - traefik.http.routers.n8n.tls.certresolver=${TRAEFIK_CERTRESOLVER:-le}\\n      - traefik.http.services.n8n.loadbalancer.server.port=5678\\n    restart: unless-stopped\\n    deploy:\\n      resources:\\n        limits:\\n          cpus: '2.0'\\n          memory: 1G\\n        reservations:\\n          memory: 512M\\n    healthcheck:\\n      test: [\\\"CMD\\\", \\\"wget\\\", \\\"--spider\\\", \\\"-q\\\", \\\"http://localhost:5678/healthz\\\"]\\n      interval: 30s\\n      timeout: 10s\\n      retries: 3\\n      start_period: 60s\\nvolumes:\\n  data:\\n    driver: local\",\n  \"prune\": true,\n  \"pullImage\": true\n}",
-          "options": {}
+          "jsonBody": "={\n  \"services\": {\n    \"n8n\": {\n      \"image\": \"n8nio/n8n:latest\",\n      \"platform\": \"linux/arm64\",\n      \"container_name\": \"n8n-test-1\",\n      \"environment\": [\n        \"N8N_METRICS=true\",\n        \"N8N_METRICS_INCLUDE_QUEUE_METRICS=true\",\n        \"NODE_OPTIONS=--max-old-space-size=512\",\n        \"EXECUTIONS_DATA_PRUNE=true\",\n        \"EXECUTIONS_DATA_MAX_AGE=168\",\n        \"N8N_HIRING_BANNER_ENABLED=false\",\n        \"N8N_LOG_LEVEL=warn\",\n        \"GENERIC_TIMEZONE=America/New_York\",\n        \"TZ=America/New_York\",\n        \"N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true\",\n        \"N8N_RUNNERS_ENABLED=true\",\n        \"N8N_SECURE_COOKIE=false\",\n        \"N8N_EDITOR_BASE_URL=http://n8n.210parklab.org:5678\"\n      ],\n      \"volumes\": [\n        \"/etc/localtime:/etc/localtime:ro\",\n        \"data:/home/node/.n8n\"\n      ],\n      \"ports\": [\n        \"5678:5678\"\n      ],\n      \"labels\": [\n        \"traefik.enable=true\",\n        \"traefik.http.routers.n8n.rule=Host(`n8n.210parklab.org`)\",\n        \"traefik.http.routers.n8n.entrypoints=websecure\",\n        \"traefik.http.routers.n8n.tls=true\",\n        \"traefik.http.routers.n8n.tls.certresolver=${TRAEFIK_CERTRESOLVER:-le}\",\n        \"traefik.http.services.n8n.loadbalancer.server.port=5678\"\n      ],\n      \"restart\": \"unless-stopped\",\n      \"deploy\": {\n        \"resources\": {\n          \"limits\": {\n            \"cpus\": \"2.0\",\n            \"memory\": \"1G\"\n          },\n          \"reservations\": {\n            \"memory\": \"512M\"\n          }\n        }\n      },\n      \"healthcheck\": {\n        \"test\": [\n          \"CMD\",\n          \"wget\",\n          \"--spider\",\n          \"-q\",\n          \"http://localhost:5678/healthz\"\n        ],\n        \"interval\": \"30s\",\n        \"timeout\": \"10s\",\n        \"retries\": 3,\n        \"start_period\": \"60s\"\n      }\n    }\n  },\n  \"volumes\": {\n    \"data\": {\n      \"driver\": \"local\"\n    }\n  }\n}",
+          "options": {
+            "timeout": 10000
+          }
         },
         "type": "n8n-nodes-base.httpRequest",
         "typeVersion": 4.3,
@@ -261,6 +261,18 @@
         ],
         "id": "f922f648-27e1-4bb0-949e-055a3452bb96",
         "name": "Manual Update Trigger"
+      },
+      {
+        "parameters": {},
+        "id": "eda1d43a-f0bf-4b82-9762-98546e738f22",
+        "name": "NoOp",
+        "type": "n8n-nodes-base.noOp",
+        "position": [
+          1856,
+          80
+        ],
+        "typeVersion": 1,
+        "notes": "Catches output even if connection drops"
       }
     ],
     "connections": {
@@ -340,13 +352,24 @@
             }
           ]
         ]
+      },
+      "HTTP Request": {
+        "main": [
+          [
+            {
+              "node": "NoOp",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
     "authors": "Salvador Solis",
     "name": null,
     "description": null
   },
-  "activeVersionId": "b511d407-a1e7-4a3f-8ddb-fbc4fbc3610c",
+  "activeVersionId": "6d737e5e-c925-4aaf-a5a7-599e782fc17b",
   "connections": {
     "If": {
       "main": [
@@ -419,6 +442,17 @@
         [
           {
             "node": "Get Stack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "NoOp",
             "type": "main",
             "index": 0
           }
@@ -627,9 +661,7 @@
     {
       "parameters": {
         "resource": "stacks",
-        "operation": "get",
         "environmentId": "2",
-        "stackId": "117",
         "requestOptions": {}
       },
       "name": "Get Stack",
@@ -655,8 +687,10 @@
         "nodeCredentialType": "portainerApi",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"stackFileContent\": \"---\\nservices:\\n  n8n:\\n    image: n8nio/n8n:latest\\n    platform: linux/arm64\\n    container_name: n8n-test-1\\n    environment:\\n      - N8N_METRICS=true\\n      - N8N_METRICS_INCLUDE_QUEUE_METRICS=true\\n      - NODE_OPTIONS=--max-old-space-size=512\\n      - EXECUTIONS_DATA_PRUNE=true\\n      - EXECUTIONS_DATA_MAX_AGE=168\\n      - N8N_HIRING_BANNER_ENABLED=false\\n      - N8N_LOG_LEVEL=warn\\n      - GENERIC_TIMEZONE=America/New_York\\n      - TZ=America/New_York\\n      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true\\n      - N8N_RUNNERS_ENABLED=true\\n      - N8N_SECURE_COOKIE=false\\n      - N8N_EDITOR_BASE_URL=http://n8n.210parklab.org:5678\\n    volumes:\\n      - /etc/localtime:/etc/localtime:ro\\n      - data:/home/node/.n8n\\n    ports:\\n      - \\\"5678:5678\\\"\\n    labels:\\n      - traefik.enable=true\\n      - traefik.http.routers.n8n.rule=Host(`n8n.210parklab.org`)\\n      - traefik.http.routers.n8n.entrypoints=websecure\\n      - traefik.http.routers.n8n.tls=true\\n      - traefik.http.routers.n8n.tls.certresolver=${TRAEFIK_CERTRESOLVER:-le}\\n      - traefik.http.services.n8n.loadbalancer.server.port=5678\\n    restart: unless-stopped\\n    deploy:\\n      resources:\\n        limits:\\n          cpus: '2.0'\\n          memory: 1G\\n        reservations:\\n          memory: 512M\\n    healthcheck:\\n      test: [\\\"CMD\\\", \\\"wget\\\", \\\"--spider\\\", \\\"-q\\\", \\\"http://localhost:5678/healthz\\\"]\\n      interval: 30s\\n      timeout: 10s\\n      retries: 3\\n      start_period: 60s\\nvolumes:\\n  data:\\n    driver: local\",\n  \"prune\": true,\n  \"pullImage\": true\n}",
-        "options": {}
+        "jsonBody": "={\n  \"services\": {\n    \"n8n\": {\n      \"image\": \"n8nio/n8n:latest\",\n      \"platform\": \"linux/arm64\",\n      \"container_name\": \"n8n-test-1\",\n      \"environment\": [\n        \"N8N_METRICS=true\",\n        \"N8N_METRICS_INCLUDE_QUEUE_METRICS=true\",\n        \"NODE_OPTIONS=--max-old-space-size=512\",\n        \"EXECUTIONS_DATA_PRUNE=true\",\n        \"EXECUTIONS_DATA_MAX_AGE=168\",\n        \"N8N_HIRING_BANNER_ENABLED=false\",\n        \"N8N_LOG_LEVEL=warn\",\n        \"GENERIC_TIMEZONE=America/New_York\",\n        \"TZ=America/New_York\",\n        \"N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true\",\n        \"N8N_RUNNERS_ENABLED=true\",\n        \"N8N_SECURE_COOKIE=false\",\n        \"N8N_EDITOR_BASE_URL=http://n8n.210parklab.org:5678\"\n      ],\n      \"volumes\": [\n        \"/etc/localtime:/etc/localtime:ro\",\n        \"data:/home/node/.n8n\"\n      ],\n      \"ports\": [\n        \"5678:5678\"\n      ],\n      \"labels\": [\n        \"traefik.enable=true\",\n        \"traefik.http.routers.n8n.rule=Host(`n8n.210parklab.org`)\",\n        \"traefik.http.routers.n8n.entrypoints=websecure\",\n        \"traefik.http.routers.n8n.tls=true\",\n        \"traefik.http.routers.n8n.tls.certresolver=${TRAEFIK_CERTRESOLVER:-le}\",\n        \"traefik.http.services.n8n.loadbalancer.server.port=5678\"\n      ],\n      \"restart\": \"unless-stopped\",\n      \"deploy\": {\n        \"resources\": {\n          \"limits\": {\n            \"cpus\": \"2.0\",\n            \"memory\": \"1G\"\n          },\n          \"reservations\": {\n            \"memory\": \"512M\"\n          }\n        }\n      },\n      \"healthcheck\": {\n        \"test\": [\n          \"CMD\",\n          \"wget\",\n          \"--spider\",\n          \"-q\",\n          \"http://localhost:5678/healthz\"\n        ],\n        \"interval\": \"30s\",\n        \"timeout\": \"10s\",\n        \"retries\": 3,\n        \"start_period\": \"60s\"\n      }\n    }\n  },\n  \"volumes\": {\n    \"data\": {\n      \"driver\": \"local\"\n    }\n  }\n}",
+        "options": {
+          "timeout": 10000
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
@@ -689,6 +723,18 @@
       ],
       "id": "f922f648-27e1-4bb0-949e-055a3452bb96",
       "name": "Manual Update Trigger"
+    },
+    {
+      "parameters": {},
+      "id": "eda1d43a-f0bf-4b82-9762-98546e738f22",
+      "name": "NoOp",
+      "type": "n8n-nodes-base.noOp",
+      "position": [
+        1856,
+        80
+      ],
+      "typeVersion": 1,
+      "notes": "Catches output even if connection drops"
     }
   ],
   "origin": "n8n",
@@ -725,6 +771,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2025-12-10T00:30:15.179Z",
-  "versionId": "b511d407-a1e7-4a3f-8ddb-fbc4fbc3610c"
+  "updatedAt": "2025-12-14T01:13:26.625Z",
+  "versionId": "6d737e5e-c925-4aaf-a5a7-599e782fc17b"
 }
