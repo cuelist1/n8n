@@ -1,186 +1,10 @@
 {
-  "active": false,
-  "activeVersion": null,
-  "activeVersionId": null,
-  "connections": {
-    "Is Docker": {
-      "main": [
-        [
-          {
-            "node": "Docker Path",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Approved ?": {
-      "main": [
-        [
-          {
-            "node": "Update Docker",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Every Hour": {
-      "main": [
-        [
-          {
-            "node": "Get Instance's Settings",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Docker Path": {
-      "main": [
-        [
-          {
-            "node": "Get n8n Current Version",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "New Version ?": {
-      "main": [
-        [
-          {
-            "node": "Release Overview",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Approve Update": {
-      "main": [
-        [
-          {
-            "node": "Approved ?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Needs Update ?": {
-      "main": [
-        [
-          {
-            "node": "Get n8n Github Release",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Target Version": {
-      "main": [
-        [
-          {
-            "node": "Get Version's Last Update",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Release Overview": {
-      "main": [
-        [
-          {
-            "node": "Approve Update",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get Current Version": {
-      "main": [
-        [
-          {
-            "node": "Needs Update ?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get n8n Github Release": {
-      "main": [
-        [
-          {
-            "node": "New Version ?",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Approve Update",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get Instance's Settings": {
-      "main": [
-        [
-          {
-            "node": "Is Docker",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get n8n Current Version": {
-      "main": [
-        [
-          {
-            "node": "Target Version",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Google Gemini Chat Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Release Overview",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get Version's Last Update": {
-      "main": [
-        [
-          {
-            "node": "Get Current Version",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    }
-  },
+  "updatedAt": "2025-12-14T00:13:21.000Z",
   "createdAt": "2025-12-14T00:10:55.429Z",
   "id": "0qAe8NYpYYZCM7h9",
-  "isArchived": true,
-  "meta": null,
   "name": "My workflow",
+  "active": false,
+  "isArchived": true,
   "nodes": [
     {
       "parameters": {
@@ -677,15 +501,189 @@
       "typeVersion": 2
     }
   ],
-  "origin": "n8n",
-  "pinData": {},
-  "repo": {
-    "owner": "cuelist1",
-    "name": "n8n"
+  "connections": {
+    "Is Docker": {
+      "main": [
+        [
+          {
+            "node": "Docker Path",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approved ?": {
+      "main": [
+        [
+          {
+            "node": "Update Docker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Every Hour": {
+      "main": [
+        [
+          {
+            "node": "Get Instance's Settings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Docker Path": {
+      "main": [
+        [
+          {
+            "node": "Get n8n Current Version",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "New Version ?": {
+      "main": [
+        [
+          {
+            "node": "Release Overview",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approve Update": {
+      "main": [
+        [
+          {
+            "node": "Approved ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Needs Update ?": {
+      "main": [
+        [
+          {
+            "node": "Get n8n Github Release",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Target Version": {
+      "main": [
+        [
+          {
+            "node": "Get Version's Last Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Release Overview": {
+      "main": [
+        [
+          {
+            "node": "Approve Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Current Version": {
+      "main": [
+        [
+          {
+            "node": "Needs Update ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get n8n Github Release": {
+      "main": [
+        [
+          {
+            "node": "New Version ?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Approve Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Instance's Settings": {
+      "main": [
+        [
+          {
+            "node": "Is Docker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get n8n Current Version": {
+      "main": [
+        [
+          {
+            "node": "Target Version",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Release Overview",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Version's Last Update": {
+      "main": [
+        [
+          {
+            "node": "Get Current Version",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
   },
   "settings": {
     "executionOrder": "v1"
   },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "e534acb1-4d21-462b-86dc-b2b99b89779e",
+  "activeVersionId": null,
+  "triggerCount": 0,
   "shared": [
     {
       "updatedAt": "2025-12-14T00:10:55.509Z",
@@ -695,9 +693,6 @@
       "projectId": "HsyJ6yHtqhe804oj"
     }
   ],
-  "staticData": null,
-  "tags": [],
-  "triggerCount": 0,
-  "updatedAt": "2025-12-14T00:13:21.000Z",
-  "versionId": "e534acb1-4d21-462b-86dc-b2b99b89779e"
+  "activeVersion": null,
+  "tags": []
 }
