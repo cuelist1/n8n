@@ -1,0 +1,82 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Listar stacks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-12-14T01:02:46.639Z",
+  "id": "hn2lZL8zhBS54MCe",
+  "isArchived": true,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "My workflow 3",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "08adc888-0786-4243-9875-4ec45fbd71f5",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "resource": "stacks",
+        "environmentId": "2",
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-portainer.portainer",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "4b270f40-e126-4ae0-a5e7-3ae93318fe0b",
+      "name": "Listar stacks",
+      "credentials": {
+        "portainerApi": {
+          "id": "BpUkwsej2cQrpjvR",
+          "name": "Portainer account"
+        }
+      }
+    }
+  ],
+  "origin": "n8n",
+  "pinData": {},
+  "repo": {
+    "owner": "cuelist1",
+    "name": "n8n"
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "shared": [
+    {
+      "updatedAt": "2025-12-14T01:02:46.653Z",
+      "createdAt": "2025-12-14T01:02:46.653Z",
+      "role": "workflow:owner",
+      "workflowId": "hn2lZL8zhBS54MCe",
+      "projectId": "HsyJ6yHtqhe804oj"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-12-14T01:15:03.000Z",
+  "versionId": "4b7ac070-b837-481c-bb11-09324ce4b153"
+}
