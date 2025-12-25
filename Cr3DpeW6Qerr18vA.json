@@ -1,0 +1,349 @@
+{
+  "updatedAt": "2025-12-25T04:14:37.075Z",
+  "createdAt": "2025-12-24T22:21:18.200Z",
+  "id": "Cr3DpeW6Qerr18vA",
+  "name": "OpenEMR Patch Monitor",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24
+            }
+          ]
+        }
+      },
+      "id": "c6d4b389-cd1d-4d49-b5df-d61e11ae3189",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        4704,
+        3952
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://www.open-emr.org/wiki/index.php/OpenEMR_Patches",
+        "options": {}
+      },
+      "id": "890562f6-8b7c-4c56-8ecb-496a182b9d13",
+      "name": "Fetch Patch Page",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4896,
+        3952
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "patchContent",
+              "cssSelector": "#content"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "74a9c5b4-341f-44bd-badc-f2c52797240c",
+      "name": "Extract Patch Content",
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        5104,
+        3952
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const content = $input.first().json.patchContent;\n\n// Clean up the content but keep structure\nlet cleanContent = content\n  .replace(/From OpenEMR Project Wiki/gi, '')\n  .replace(/Retrieved from.*$/gm, '')\n  .replace(/Categories:.*$/gm, '')\n  .replace(/\\[edit\\]/g, '')\n  .trim();\n\n// Extract version - try multiple patterns\nlet version = 'Unknown Version';\n\n// Pattern 1: \"OpenEMR 7.0.3 Patches\" or \"7.0.3 Patches\"\nconst versionMatch1 = cleanContent.match(/OpenEMR\\s+([\\d.]+)\\s+Patches?/i);\nif (versionMatch1) {\n  version = versionMatch1[1];\n} else {\n  // Pattern 2: Just version number followed by Patches\n  const versionMatch2 = cleanContent.match(/([\\d.]+)\\s+Patches?/i);\n  if (versionMatch2) {\n    version = versionMatch2[1];\n  } else {\n    // Pattern 3: Look for version in title or heading\n    const versionMatch3 = cleanContent.match(/version\\s+([\\d.]+)/i);\n    if (versionMatch3) {\n      version = versionMatch3[1];\n    } else {\n      // Pattern 4: Just find any version-like number\n      const versionMatch4 = cleanContent.match(/([\\d]+\\.[\\d]+\\.[\\d]+)/i);\n      if (versionMatch4) {\n        version = versionMatch4[1];\n      }\n    }\n  }\n}\n\n// Try to extract patch listings\nconst patchSections = [];\nconst lines = cleanContent.split('\\n');\nfor (let i = 0; i < lines.length; i++) {\n  const line = lines[i].trim();\n  if (line.match(/^Patch\\s+\\d+/i) || line.match(/^\\d+\\./)) {\n    patchSections.push(line);\n  } else if (line.length > 20 && line.match(/sql|fix|update|bug|security/i)) {\n    patchSections.push(line);\n  }\n}\n\nconst patchList = patchSections.length > 0 \n  ? patchSections.slice(0, 20).join('\\n') \n  : cleanContent.substring(0, 2000);\n\n// Check if there are patches\nconst hasPatches = !cleanContent.includes('no 7.0.4 patches yet') && \n                   !cleanContent.includes('There are no') &&\n                   cleanContent.length > 100;\n\nreturn {\n  json: {\n    cleanContent,\n    patchList,\n    version,\n    hasPatches,\n    timestamp: new Date().toISOString(),\n    patchCount: patchSections.length\n  }\n};"
+      },
+      "id": "e7003612-d95a-4c8c-b10d-12e28a377b0f",
+      "name": "Process Content",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5296,
+        3952
+      ]
+    },
+    {
+      "parameters": {
+        "value": "={{ $json.cleanContent }}"
+      },
+      "id": "4c9e749b-475b-4c08-9a1d-96efa9813c25",
+      "name": "Generate Content Hash",
+      "type": "n8n-nodes-base.crypto",
+      "typeVersion": 1,
+      "position": [
+        5440,
+        3664
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "assign1",
+              "name": "cleanContent",
+              "value": "={{ $node['Process Content'].json.cleanContent }}",
+              "type": "string"
+            },
+            {
+              "id": "assign2",
+              "name": "patchList",
+              "value": "={{ $node['Process Content'].json.patchList }}",
+              "type": "string"
+            },
+            {
+              "id": "assign3",
+              "name": "version",
+              "value": "={{ $node['Process Content'].json.version }}",
+              "type": "string"
+            },
+            {
+              "id": "assign4",
+              "name": "patchCount",
+              "value": "={{ $node['Process Content'].json.patchCount }}",
+              "type": "number"
+            },
+            {
+              "id": "assign5",
+              "name": "timestamp",
+              "value": "={{ $node['Process Content'].json.timestamp }}",
+              "type": "string"
+            },
+            {
+              "id": "assign6",
+              "name": "hash",
+              "value": "={{ $node['Generate Content Hash'].json.hash }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "99010fe6-a8b9-49a8-9ae3-e906626d4cd0",
+      "name": "Merge Hash with Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        5632,
+        3664
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Simple hash function since crypto module is disabled\nfunction simpleHash(str) {\n  let hash = 0;\n  if (str.length === 0) return hash.toString();\n  for (let i = 0; i < str.length; i++) {\n    const char = str.charCodeAt(i);\n    hash = ((hash << 5) - hash) + char;\n    hash = hash & hash; // Convert to 32bit integer\n  }\n  return Math.abs(hash).toString(36);\n}\n\n// Get the input data directly from Process Content\nconst inputData = $input.first().json;\n\n// Generate hash using simple function\nconst currentHash = simpleHash(inputData.cleanContent || '');\n\n// Try to get previous hash from static data\nlet previousHash = 'initial';\ntry {\n  const staticData = $workflow.staticData;\n  if (staticData && staticData.lastHash) {\n    previousHash = staticData.lastHash;\n  }\n} catch (e) {\n  previousHash = 'initial';\n}\n\n// Check if content has changed\nconst hasChanged = currentHash !== previousHash;\n\nconsole.log('Hash Check:', {\n  currentHash,\n  previousHash,\n  hasChanged\n});\n\n// Return all data needed for email\nreturn {\n  json: {\n    currentHash: currentHash,\n    previousHash: previousHash,\n    hasChanged: hasChanged,\n    cleanContent: inputData.cleanContent || 'No content',\n    patchList: inputData.patchList || 'No patches listed',\n    version: inputData.version || 'Unknown',\n    patchCount: inputData.patchCount || 0,\n    timestamp: inputData.timestamp || new Date().toISOString()\n  }\n};"
+      },
+      "id": "105c941d-b8ea-4849-83bb-0501b6bce4f1",
+      "name": "Check Hash Change",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5696,
+        3952
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition1",
+              "leftValue": "={{ $json.hasChanged }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "be7f5a62-ec8d-4a87-b9b6-18da6bc54913",
+      "name": "Content Changed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        5904,
+        3952
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "no-reply@1412studios.info",
+        "toEmail": "cuelist@gmail.com",
+        "subject": "={{ '🚨 New OpenEMR ' + $json.version + ' Patches Available!' }}",
+        "html": "=<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }\n    .container { max-width: 600px; margin: 0 auto; padding: 20px; }\n    .header { background-color: #0066cc; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }\n    .content { background-color: #f9f9f9; padding: 20px; border: 1px solid #ddd; border-radius: 0 0 5px 5px; }\n    .post-info { background-color: white; padding: 15px; margin: 15px 0; border-left: 4px solid #0066cc; }\n    .patch-list { background-color: #f0f0f0; padding: 15px; margin: 20px 0; border-radius: 5px; white-space: pre-wrap; font-family: monospace; font-size: 0.9em; }\n    .button { display: inline-block; padding: 12px 24px; background-color: #0066cc; color: white; text-decoration: none; border-radius: 5px; margin: 10px 0; }\n    .timestamp { color: #666; font-size: 0.9em; }\n    .stats { background-color: #e8f4f8; padding: 10px; border-radius: 5px; margin: 10px 0; }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n      <h1>🚨 New OpenEMR Update!</h1>\n      <p style=\"margin: 5px 0;\">Version {{ $json.version }}</p>\n    </div>\n    <div class=\"content\">\n      <div class=\"post-info\">\n        <h2>OpenEMR Patch Update Detected</h2>\n        <p class=\"timestamp\"><strong>Detection Time:</strong> {{ $json.timestamp }}</p>\n        \n        <div class=\"stats\">\n          <strong>📊 Update Summary:</strong><br>\n          Version: {{ $json.version }}<br>\n          Patches Found: {{ $json.patchCount }}<br>\n        </div>\n        \n        <h3>Patch Details:</h3>\n        <div class=\"patch-list\">{{ $json.patchList }}</div>\n      </div>\n      \n      <center>\n        <a href=\"https://www.open-emr.org/wiki/index.php/OpenEMR_Patches\" class=\"button\">View All Patches</a>\n      </center>\n      \n      <p style=\"margin-top: 20px; font-size: 0.9em; color: #666;\">\n        This is an automated notification from your n8n OpenEMR Patch Monitor.<br>\n        <strong>Previous Hash:</strong> {{ $json.previousHash }}<br>\n        <strong>Current Hash:</strong> {{ $json.currentHash }}\n      </p>\n    </div>\n  </div>\n</body>\n</html>",
+        "options": {}
+      },
+      "id": "ef46bde5-1b3c-48c4-a66d-88e6b4ea6ff2",
+      "name": "Send Email Alert",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        6096,
+        3840
+      ],
+      "webhookId": "7004facb-375d-4630-af5f-bf42983e1ae1",
+      "credentials": {
+        "smtp": {
+          "id": "mpqkQU1CGEVd9mjL",
+          "name": "Mailer Send"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Update the stored hash in workflow static data\nconst currentHash = $input.first().json.currentHash;\n\ntry {\n  if (!$workflow.staticData) {\n    $workflow.staticData = {};\n  }\n  $workflow.staticData.lastHash = currentHash;\n} catch (e) {\n  console.log('Could not save to static data:', e);\n}\n\nreturn {\n  json: {\n    message: 'Hash updated successfully',\n    newHash: currentHash,\n    timestamp: new Date().toISOString()\n  }\n};"
+      },
+      "id": "c28a4cab-5052-4c79-8923-6618d72befae",
+      "name": "Update Stored Hash",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6304,
+        3840
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Just pass through - no changes detected\nreturn {\n  json: {\n    message: 'No changes detected',\n    hash: $input.first().json.currentHash,\n    timestamp: new Date().toISOString()\n  }\n};"
+      },
+      "id": "31c2c8ca-dd0f-4ab0-bf65-3149630e567a",
+      "name": "No Change",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6096,
+        4048
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch Patch Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Patch Page": {
+      "main": [
+        [
+          {
+            "node": "Extract Patch Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Patch Content": {
+      "main": [
+        [
+          {
+            "node": "Process Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Content": {
+      "main": [
+        [
+          {
+            "node": "Check Hash Change",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Hash Change": {
+      "main": [
+        [
+          {
+            "node": "Content Changed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Content Changed?": {
+      "main": [
+        [
+          {
+            "node": "Send Email Alert",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Change",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email Alert": {
+      "main": [
+        [
+          {
+            "node": "Update Stored Hash",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "7a6df4ef-f220-4a8e-b045-d4ffcfeae06a",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-12-24T22:21:18.214Z",
+      "createdAt": "2025-12-24T22:21:18.214Z",
+      "role": "workflow:owner",
+      "workflowId": "Cr3DpeW6Qerr18vA",
+      "projectId": "HsyJ6yHtqhe804oj"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
