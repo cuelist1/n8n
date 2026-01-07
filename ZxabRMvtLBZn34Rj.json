@@ -1,0 +1,82 @@
+{
+  "updatedAt": "2026-01-06T22:25:34.655Z",
+  "createdAt": "2026-01-06T01:35:34.493Z",
+  "id": "ZxabRMvtLBZn34Rj",
+  "name": "SSH_n8n_server",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {
+        "command": "={{ $json.command }}"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        720,
+        96
+      ],
+      "id": "d357be8b-a7cb-49bf-80aa-d05fad1745bb",
+      "name": "Execute a command",
+      "credentials": {
+        "sshPassword": {
+          "id": "zpDayInQZyB0P1RN",
+          "name": "SSH Password account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "command"
+            }
+          ]
+        }
+      },
+      "id": "e143de6a-da7b-4d34-a5c3-fef9bccf0a13",
+      "typeVersion": 1.1,
+      "name": "Start",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        496,
+        32
+      ]
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Execute a command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "e524a8c8-83a9-435b-a901-98d92ecb8afb",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-01-06T01:35:34.493Z",
+      "createdAt": "2026-01-06T01:35:34.493Z",
+      "role": "workflow:owner",
+      "workflowId": "ZxabRMvtLBZn34Rj",
+      "projectId": "bYHsD7WI2aHVxgKL"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
