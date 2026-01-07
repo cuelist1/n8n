@@ -1,0 +1,58 @@
+{
+  "updatedAt": "2026-01-07T00:18:23.614Z",
+  "createdAt": "2026-01-07T00:18:23.614Z",
+  "id": "NnWQcZMjISROJ-bzqE16C",
+  "name": "My workflow",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ad4a5be3-9995-4571-b738-65a7993a9105",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "path": "4e024ff6-f272-49bb-a50d-40cbe7906536",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "f67e765e-d5b3-4f84-a40f-a8e277315d3f",
+      "name": "Webhook",
+      "webhookId": "4e024ff6-f272-49bb-a50d-40cbe7906536"
+    }
+  ],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "4132a371-088f-4849-b1ae-2c8a2003d767",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-01-07T00:18:23.614Z",
+      "createdAt": "2026-01-07T00:18:23.614Z",
+      "role": "workflow:owner",
+      "workflowId": "NnWQcZMjISROJ-bzqE16C",
+      "projectId": "bYHsD7WI2aHVxgKL"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
