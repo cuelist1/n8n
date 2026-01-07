@@ -1,0 +1,91 @@
+{
+  "updatedAt": "2026-01-06T00:56:48.256Z",
+  "createdAt": "2026-01-06T00:21:54.896Z",
+  "id": "Q1F7yPFrT5Zy1vIZ",
+  "name": "Docker Tool",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {
+        "command": "={{ $json.command }}"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        672,
+        -64
+      ],
+      "id": "78a16125-e842-4635-b2bd-87c5185631f6",
+      "name": "Execute a command",
+      "credentials": {
+        "sshPassword": {
+          "id": "zpDayInQZyB0P1RN",
+          "name": "SSH Password account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "command"
+            }
+          ]
+        }
+      },
+      "id": "eda9d0ed-ea19-4acb-99e9-b58d3f0775a3",
+      "typeVersion": 1.1,
+      "name": "Start",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        448,
+        -64
+      ]
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Execute a command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "6823e555-0f7a-4327-8b0b-3cdd14282441",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-01-06T00:21:54.896Z",
+      "createdAt": "2026-01-06T00:21:54.896Z",
+      "role": "workflow:owner",
+      "workflowId": "Q1F7yPFrT5Zy1vIZ",
+      "projectId": "bYHsD7WI2aHVxgKL"
+    }
+  ],
+  "activeVersion": null,
+  "tags": [
+    {
+      "updatedAt": "2025-12-30T01:19:19.599Z",
+      "createdAt": "2025-12-30T01:19:19.599Z",
+      "id": "AnaZRYtgUgbNgGHO",
+      "name": "Dev"
+    }
+  ]
+}
