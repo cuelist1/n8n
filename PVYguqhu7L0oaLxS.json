@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2025-12-28T22:27:01.227Z",
+  "updatedAt": "2026-04-04T03:55:53.114Z",
   "createdAt": "2025-12-28T22:20:06.046Z",
   "id": "PVYguqhu7L0oaLxS",
   "name": "OpenEMR Patch Monitor",
-  "active": true,
+  "active": false,
   "isArchived": false,
   "nodes": [
     {
@@ -22,9 +22,10 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -736,
+        -784,
         512
-      ]
+      ],
+      "disabled": true
     },
     {
       "parameters": {
@@ -36,7 +37,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -528,
+        -624,
         512
       ]
     },
@@ -58,7 +59,7 @@
       "type": "n8n-nodes-base.html",
       "typeVersion": 1.2,
       "position": [
-        -336,
+        -432,
         512
       ]
     },
@@ -71,7 +72,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -128,
+        -256,
         512
       ]
     },
@@ -84,7 +85,7 @@
       "type": "n8n-nodes-base.crypto",
       "typeVersion": 1,
       "position": [
-        80,
+        -80,
         512
       ]
     },
@@ -137,7 +138,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.3,
       "position": [
-        176,
+        96,
         512
       ]
     },
@@ -205,8 +206,8 @@
       "webhookId": "ad5c8700-f299-4c44-bb72-2a022dab8393",
       "credentials": {
         "smtp": {
-          "id": "KcVfBk8PT10TXGS1",
-          "name": "MailerSend"
+          "id": "Tk7WbrH2KgcyQhAB",
+          "name": "Bravo SMTP account"
         }
       }
     },
@@ -296,7 +297,8 @@
   },
   "settings": {
     "executionOrder": "v1",
-    "availableInMCP": false
+    "availableInMCP": false,
+    "binaryMode": "separate"
   },
   "staticData": {
     "node:Schedule Trigger": {
@@ -309,8 +311,8 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "25545f41-a355-4ecd-9073-64fcc56c6e8c",
-  "activeVersionId": "25545f41-a355-4ecd-9073-64fcc56c6e8c",
+  "versionId": "5512c1c6-2800-4234-9a12-b35469102142",
+  "activeVersionId": null,
   "triggerCount": 1,
   "shared": [
     {
@@ -321,305 +323,7 @@
       "projectId": "bYHsD7WI2aHVxgKL"
     }
   ],
-  "activeVersion": {
-    "updatedAt": "2025-12-28T22:27:35.381Z",
-    "createdAt": "2025-12-28T22:27:01.233Z",
-    "versionId": "25545f41-a355-4ecd-9073-64fcc56c6e8c",
-    "workflowId": "PVYguqhu7L0oaLxS",
-    "nodes": [
-      {
-        "parameters": {
-          "rule": {
-            "interval": [
-              {
-                "field": "hours",
-                "hoursInterval": 24
-              }
-            ]
-          }
-        },
-        "id": "889ef1ea-edca-45a8-884f-8b95ad4f6d8f",
-        "name": "Schedule Trigger",
-        "type": "n8n-nodes-base.scheduleTrigger",
-        "typeVersion": 1.2,
-        "position": [
-          -736,
-          512
-        ]
-      },
-      {
-        "parameters": {
-          "url": "https://www.open-emr.org/wiki/index.php/OpenEMR_Patches",
-          "options": {}
-        },
-        "id": "91a3314d-e255-4ecd-8b53-96e86acad16e",
-        "name": "Fetch Patch Page",
-        "type": "n8n-nodes-base.httpRequest",
-        "typeVersion": 4.2,
-        "position": [
-          -528,
-          512
-        ]
-      },
-      {
-        "parameters": {
-          "operation": "extractHtmlContent",
-          "extractionValues": {
-            "values": [
-              {
-                "key": "patchContent",
-                "cssSelector": "#content"
-              }
-            ]
-          },
-          "options": {}
-        },
-        "id": "2a4ddc63-700c-4232-ba11-924fa435a731",
-        "name": "Extract Patch Content",
-        "type": "n8n-nodes-base.html",
-        "typeVersion": 1.2,
-        "position": [
-          -336,
-          512
-        ]
-      },
-      {
-        "parameters": {
-          "jsCode": "const content = $input.first().json.patchContent;\n\n// Clean up the content but keep structure\nlet cleanContent = content\n  .replace(/From OpenEMR Project Wiki/gi, '')\n  .replace(/Retrieved from.*$/gm, '')\n  .replace(/Categories:.*$/gm, '')\n  .replace(/\\[edit\\]/g, '')\n  .trim();\n\n// Extract version - try multiple patterns\nlet version = 'Unknown Version';\n\n// Pattern 1: \"OpenEMR 7.0.3 Patches\" or \"7.0.3 Patches\"\nconst versionMatch1 = cleanContent.match(/OpenEMR\\s+([\\d.]+)\\s+Patches?/i);\nif (versionMatch1) {\n  version = versionMatch1[1];\n} else {\n  // Pattern 2: Just version number followed by Patches\n  const versionMatch2 = cleanContent.match(/([\\d.]+)\\s+Patches?/i);\n  if (versionMatch2) {\n    version = versionMatch2[1];\n  } else {\n    // Pattern 3: Look for version in title or heading\n    const versionMatch3 = cleanContent.match(/version\\s+([\\d.]+)/i);\n    if (versionMatch3) {\n      version = versionMatch3[1];\n    } else {\n      // Pattern 4: Just find any version-like number\n      const versionMatch4 = cleanContent.match(/([\\d]+\\.[\\d]+\\.[\\d]+)/i);\n      if (versionMatch4) {\n        version = versionMatch4[1];\n      }\n    }\n  }\n}\n\n// Try to extract patch listings\nconst patchSections = [];\nconst lines = cleanContent.split('\\n');\nfor (let i = 0; i < lines.length; i++) {\n  const line = lines[i].trim();\n  if (line.match(/^Patch\\s+\\d+/i) || line.match(/^\\d+\\./)) {\n    patchSections.push(line);\n  } else if (line.length > 20 && line.match(/sql|fix|update|bug|security/i)) {\n    patchSections.push(line);\n  }\n}\n\nconst patchList = patchSections.length > 0 \n  ? patchSections.slice(0, 20).join('\\n') \n  : cleanContent.substring(0, 2000);\n\n// Check if there are patches\nconst hasPatches = !cleanContent.includes('no 7.0.4 patches yet') && \n                   !cleanContent.includes('There are no') &&\n                   cleanContent.length > 100;\n\nreturn {\n  json: {\n    cleanContent,\n    patchList,\n    version,\n    hasPatches,\n    timestamp: new Date().toISOString(),\n    patchCount: patchSections.length\n  }\n};"
-        },
-        "id": "0e188fa3-91c2-499e-94ba-3fa258b986cf",
-        "name": "Process Content",
-        "type": "n8n-nodes-base.code",
-        "typeVersion": 2,
-        "position": [
-          -128,
-          512
-        ]
-      },
-      {
-        "parameters": {
-          "value": "={{ $json.cleanContent }}"
-        },
-        "id": "5ec6e198-3ebc-4461-9e78-db56c2926448",
-        "name": "Generate Content Hash",
-        "type": "n8n-nodes-base.crypto",
-        "typeVersion": 1,
-        "position": [
-          80,
-          512
-        ]
-      },
-      {
-        "parameters": {
-          "assignments": {
-            "assignments": [
-              {
-                "id": "assign1",
-                "name": "cleanContent",
-                "value": "={{ $node['Process Content'].json.cleanContent }}",
-                "type": "string"
-              },
-              {
-                "id": "assign2",
-                "name": "patchList",
-                "value": "={{ $node['Process Content'].json.patchList }}",
-                "type": "string"
-              },
-              {
-                "id": "assign3",
-                "name": "version",
-                "value": "={{ $node['Process Content'].json.version }}",
-                "type": "string"
-              },
-              {
-                "id": "assign4",
-                "name": "patchCount",
-                "value": "={{ $node['Process Content'].json.patchCount }}",
-                "type": "number"
-              },
-              {
-                "id": "assign5",
-                "name": "timestamp",
-                "value": "={{ $node['Process Content'].json.timestamp }}",
-                "type": "string"
-              },
-              {
-                "id": "assign6",
-                "name": "hash",
-                "value": "={{ $node['Generate Content Hash'].json.hash }}",
-                "type": "string"
-              }
-            ]
-          },
-          "options": {}
-        },
-        "id": "c1888314-105e-490d-8826-509527ac3b1f",
-        "name": "Merge Hash with Data",
-        "type": "n8n-nodes-base.set",
-        "typeVersion": 3.3,
-        "position": [
-          176,
-          512
-        ]
-      },
-      {
-        "parameters": {
-          "jsCode": "// Simple hash function since crypto module is disabled\nfunction simpleHash(str) {\n  let hash = 0;\n  if (str.length === 0) return hash.toString();\n  for (let i = 0; i < str.length; i++) {\n    const char = str.charCodeAt(i);\n    hash = ((hash << 5) - hash) + char;\n    hash = hash & hash; // Convert to 32bit integer\n  }\n  return Math.abs(hash).toString(36);\n}\n\n// Get the input data directly from Process Content\nconst inputData = $input.first().json;\n\n// Generate hash using simple function\nconst currentHash = simpleHash(inputData.cleanContent || '');\n\n// Get previous hash from workflow static data (now stored in PostgreSQL)\nconst staticData = getWorkflowStaticData('global');\nconst previousHash = staticData.lastHash || 'initial';\n\n// Check if content has changed\nconst hasChanged = currentHash !== previousHash;\n\nconsole.log('Hash Check:', {\n  currentHash,\n  previousHash,\n  hasChanged\n});\n\n// Return all data needed for email\nreturn {\n  json: {\n    currentHash: currentHash,\n    previousHash: previousHash,\n    hasChanged: hasChanged,\n    cleanContent: inputData.cleanContent || 'No content',\n    patchList: inputData.patchList || 'No patches listed',\n    version: inputData.version || 'Unknown',\n    patchCount: inputData.patchCount || 0,\n    timestamp: inputData.timestamp || new Date().toISOString()\n  }\n};"
-        },
-        "id": "d4a48348-f70b-4a49-a71f-887232076ac4",
-        "name": "Check Hash Change",
-        "type": "n8n-nodes-base.code",
-        "typeVersion": 2,
-        "position": [
-          272,
-          512
-        ]
-      },
-      {
-        "parameters": {
-          "conditions": {
-            "options": {
-              "caseSensitive": true,
-              "leftValue": "",
-              "typeValidation": "strict"
-            },
-            "conditions": [
-              {
-                "id": "condition1",
-                "leftValue": "={{ $json.hasPatches }}",
-                "rightValue": true,
-                "operator": {
-                  "type": "boolean",
-                  "operation": "true"
-                }
-              }
-            ],
-            "combinator": "and"
-          },
-          "options": {}
-        },
-        "id": "615a9ea8-e3f9-43d1-8ed3-c699e8ea96e9",
-        "name": "Patches Available?",
-        "type": "n8n-nodes-base.if",
-        "typeVersion": 2,
-        "position": [
-          480,
-          512
-        ]
-      },
-      {
-        "parameters": {
-          "fromEmail": "no-reply@1412studios.info",
-          "toEmail": "cuelist@gmail.com",
-          "subject": "={{ '🚨 New OpenEMR ' + $json.version + ' Patches Available!' }}",
-          "html": "=<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }\n    .container { max-width: 600px; margin: 0 auto; padding: 20px; }\n    .header { background-color: #0066cc; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }\n    .content { background-color: #f9f9f9; padding: 20px; border: 1px solid #ddd; border-radius: 0 0 5px 5px; }\n    .post-info { background-color: white; padding: 15px; margin: 15px 0; border-left: 4px solid #0066cc; }\n    .patch-list { background-color: #f0f0f0; padding: 15px; margin: 20px 0; border-radius: 5px; white-space: pre-wrap; font-family: monospace; font-size: 0.9em; }\n    .button { display: inline-block; padding: 12px 24px; background-color: #0066cc; color: white; text-decoration: none; border-radius: 5px; margin: 10px 0; }\n    .timestamp { color: #666; font-size: 0.9em; }\n    .stats { background-color: #e8f4f8; padding: 10px; border-radius: 5px; margin: 10px 0; }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"header\">\n      <h1>🚨 New OpenEMR Update!</h1>\n      <p style=\"margin: 5px 0;\">Version {{ $json.version }}</p>\n    </div>\n    <div class=\"content\">\n      <div class=\"post-info\">\n        <h2>OpenEMR Patch Update Detected</h2>\n        <p class=\"timestamp\"><strong>Detection Time:</strong> {{ $json.timestamp }}</p>\n        \n        <div class=\"stats\">\n          <strong>📊 Update Summary:</strong><br>\n          Version: {{ $json.version }}<br>\n          Patches Found: {{ $json.patchCount }}<br>\n        </div>\n        \n        <h3>Patch Details:</h3>\n        <div class=\"patch-list\">{{ $json.patchList }}</div>\n      </div>\n      \n      <center>\n        <a href=\"https://www.open-emr.org/wiki/index.php/OpenEMR_Patches\" class=\"button\">View All Patches</a>\n      </center>\n      \n      <p style=\"margin-top: 20px; font-size: 0.9em; color: #666;\">\n        This is an automated notification from your n8n OpenEMR Patch Monitor.<br>\n        <strong>Previous Hash:</strong> {{ $json.previousHash }}<br>\n        <strong>Current Hash:</strong> {{ $json.currentHash }}\n      </p>\n    </div>\n  </div>\n</body>\n</html>",
-          "options": {}
-        },
-        "id": "bbfaa41a-2e76-4c28-9822-b5b450aeccee",
-        "name": "Send Email Alert",
-        "type": "n8n-nodes-base.emailSend",
-        "typeVersion": 2.1,
-        "position": [
-          672,
-          400
-        ],
-        "webhookId": "ad5c8700-f299-4c44-bb72-2a022dab8393",
-        "credentials": {
-          "smtp": {
-            "id": "KcVfBk8PT10TXGS1",
-            "name": "MailerSend"
-          }
-        }
-      },
-      {
-        "parameters": {
-          "jsCode": "// Update the stored hash in workflow static data (PostgreSQL)\nconst currentHash = $input.first().json.currentHash;\n\n// Get static data and save the hash\nconst staticData = getWorkflowStaticData('global');\nstaticData.lastHash = currentHash;\n\nconsole.log('Hash saved successfully:', currentHash);\n\nreturn {\n  json: {\n    message: 'Hash updated successfully',\n    newHash: currentHash,\n    timestamp: new Date().toISOString()\n  }\n};"
-        },
-        "id": "d2ce5e43-9318-4aab-9ed6-b172f6aeff0d",
-        "name": "Update Stored Hash",
-        "type": "n8n-nodes-base.code",
-        "typeVersion": 2,
-        "position": [
-          880,
-          400
-        ]
-      },
-      {
-        "parameters": {
-          "jsCode": "// Just pass through - no patches available\nreturn {\n  json: {\n    message: 'No patches available yet',\n    version: $input.first().json.version,\n    timestamp: new Date().toISOString()\n  }\n};"
-        },
-        "id": "0cbb641d-f09d-408c-96b8-893422557f4a",
-        "name": "No Patches Yet",
-        "type": "n8n-nodes-base.code",
-        "typeVersion": 2,
-        "position": [
-          672,
-          608
-        ]
-      }
-    ],
-    "connections": {
-      "Schedule Trigger": {
-        "main": [
-          [
-            {
-              "node": "Fetch Patch Page",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Fetch Patch Page": {
-        "main": [
-          [
-            {
-              "node": "Extract Patch Content",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Extract Patch Content": {
-        "main": [
-          [
-            {
-              "node": "Process Content",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Process Content": {
-        "main": [
-          [
-            {
-              "node": "Patches Available?",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Patches Available?": {
-        "main": [
-          [
-            {
-              "node": "Send Email Alert",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      }
-    },
-    "authors": "Salvador Solis",
-    "name": "Version 1.1",
-    "description": "fixed for postgres",
-    "autosaved": false
-  },
+  "activeVersion": null,
   "tags": [
     {
       "updatedAt": "2025-12-28T22:20:34.363Z",
