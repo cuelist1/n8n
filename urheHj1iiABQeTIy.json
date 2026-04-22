@@ -1,0 +1,651 @@
+{
+  "updatedAt": "2026-04-22T04:12:30.081Z",
+  "createdAt": "2026-04-21T17:36:50.501Z",
+  "id": "urheHj1iiABQeTIy",
+  "name": "Wake PC via SSH if Offline",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 21
+            }
+          ]
+        }
+      },
+      "id": "17939b3f-2580-4106-922d-102355186fc4",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        160,
+        448
+      ]
+    },
+    {
+      "parameters": {
+        "command": "ping -c 2 192.168.10.66"
+      },
+      "id": "dd7e9923-8bf5-4ee8-8461-cc629ce8c8b7",
+      "name": "Ping Check",
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        352,
+        448
+      ],
+      "credentials": {
+        "sshPassword": {
+          "id": "zpDayInQZyB0P1RN",
+          "name": "SSH Password account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{$json.code}}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "1ce42bf9-772c-49f3-bc73-f0ddd3273f0e",
+      "name": "Is PC Up?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        560,
+        448
+      ]
+    },
+    {
+      "parameters": {
+        "command": "echo PC is already ON"
+      },
+      "id": "d4f3c588-a0c2-424b-b4f4-407c694819c3",
+      "name": "Already Up",
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        752,
+        336
+      ],
+      "credentials": {
+        "sshPassword": {
+          "id": "CB6db7p0o7O00uNn",
+          "name": "Skynet Login"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "command": "wakeonlan 34:64:a9:27:7c:e2"
+      },
+      "id": "8e47abdf-ba36-4279-85c1-9673273dc554",
+      "name": "Send WOL",
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        752,
+        544
+      ],
+      "credentials": {
+        "sshPassword": {
+          "id": "zpDayInQZyB0P1RN",
+          "name": "SSH Password account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "amount": 30,
+        "unit": "seconds"
+      },
+      "id": "ba3fe959-8be4-4d48-9252-a236555ba45e",
+      "name": "Wait 45s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        960,
+        544
+      ],
+      "webhookId": "325f0863-a3f0-4d4e-8a86-0285d0fcb84b"
+    },
+    {
+      "parameters": {
+        "command": "ping -c 2 192.168.10.66"
+      },
+      "id": "8a3e7bae-e2b9-47e2-8443-32784ca95666",
+      "name": "Ping After",
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        1152,
+        544
+      ],
+      "credentials": {
+        "sshPassword": {
+          "id": "zpDayInQZyB0P1RN",
+          "name": "SSH Password account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{$json.code}}",
+              "operation": "equal"
+            }
+          ]
+        }
+      },
+      "id": "292e835a-916e-44ca-a38b-c9fb345dbe82",
+      "name": "Did It Wake?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "command": "echo PC woke successfully"
+      },
+      "id": "d6d02bbb-1691-4d4b-a39a-3fd2847ec07a",
+      "name": "Success",
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        1552,
+        448
+      ],
+      "credentials": {
+        "sshPassword": {
+          "id": "CB6db7p0o7O00uNn",
+          "name": "Skynet Login"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "command": "echo PC failed to wake"
+      },
+      "id": "349c02eb-c74c-4d68-aada-108b215548d2",
+      "name": "Failure",
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        1552,
+        640
+      ],
+      "credentials": {
+        "sshPassword": {
+          "id": "CB6db7p0o7O00uNn",
+          "name": "Skynet Login"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        128,
+        112
+      ],
+      "id": "64a9748c-8218-4291-9335-578f8931fdbc",
+      "name": "When clicking ‘Execute workflow’"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Ping Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ping Check": {
+      "main": [
+        [
+          {
+            "node": "Is PC Up?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is PC Up?": {
+      "main": [
+        [
+          {
+            "node": "Already Up",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send WOL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send WOL": {
+      "main": [
+        [
+          {
+            "node": "Wait 45s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 45s": {
+      "main": [
+        [
+          {
+            "node": "Ping After",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ping After": {
+      "main": [
+        [
+          {
+            "node": "Did It Wake?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Did It Wake?": {
+      "main": [
+        [
+          {
+            "node": "Success",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Ping Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "5f1a962c-42ae-4e2f-b2c2-ed661962864a",
+  "activeVersionId": "1b73e0b1-06b7-47e1-83ca-dff61654bd12",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-04-21T17:36:50.501Z",
+      "createdAt": "2026-04-21T17:36:50.501Z",
+      "role": "workflow:owner",
+      "workflowId": "urheHj1iiABQeTIy",
+      "projectId": "bYHsD7WI2aHVxgKL"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-04-22T00:27:55.907Z",
+    "createdAt": "2026-04-22T00:26:09.983Z",
+    "versionId": "1b73e0b1-06b7-47e1-83ca-dff61654bd12",
+    "workflowId": "urheHj1iiABQeTIy",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 21
+              }
+            ]
+          }
+        },
+        "id": "17939b3f-2580-4106-922d-102355186fc4",
+        "name": "Schedule Trigger",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1,
+        "position": [
+          160,
+          448
+        ]
+      },
+      {
+        "parameters": {
+          "command": "ping -c 2 192.168.10.66"
+        },
+        "id": "dd7e9923-8bf5-4ee8-8461-cc629ce8c8b7",
+        "name": "Ping Check",
+        "type": "n8n-nodes-base.ssh",
+        "typeVersion": 1,
+        "position": [
+          352,
+          448
+        ],
+        "credentials": {
+          "sshPassword": {
+            "id": "zpDayInQZyB0P1RN",
+            "name": "SSH Password account"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "number": [
+              {
+                "value1": "={{$json.code}}",
+                "operation": "equal"
+              }
+            ]
+          }
+        },
+        "id": "1ce42bf9-772c-49f3-bc73-f0ddd3273f0e",
+        "name": "Is PC Up?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 1,
+        "position": [
+          560,
+          448
+        ]
+      },
+      {
+        "parameters": {
+          "command": "echo PC is already ON"
+        },
+        "id": "d4f3c588-a0c2-424b-b4f4-407c694819c3",
+        "name": "Already Up",
+        "type": "n8n-nodes-base.ssh",
+        "typeVersion": 1,
+        "position": [
+          752,
+          336
+        ],
+        "credentials": {
+          "sshPassword": {
+            "id": "CB6db7p0o7O00uNn",
+            "name": "Skynet Login"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "command": "wakeonlan 34:64:a9:27:7c:e2"
+        },
+        "id": "8e47abdf-ba36-4279-85c1-9673273dc554",
+        "name": "Send WOL",
+        "type": "n8n-nodes-base.ssh",
+        "typeVersion": 1,
+        "position": [
+          752,
+          544
+        ],
+        "credentials": {
+          "sshPassword": {
+            "id": "zpDayInQZyB0P1RN",
+            "name": "SSH Password account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "amount": 30,
+          "unit": "seconds"
+        },
+        "id": "ba3fe959-8be4-4d48-9252-a236555ba45e",
+        "name": "Wait 45s",
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1,
+        "position": [
+          960,
+          544
+        ],
+        "webhookId": "325f0863-a3f0-4d4e-8a86-0285d0fcb84b"
+      },
+      {
+        "parameters": {
+          "command": "ping -c 2 192.168.10.66"
+        },
+        "id": "8a3e7bae-e2b9-47e2-8443-32784ca95666",
+        "name": "Ping After",
+        "type": "n8n-nodes-base.ssh",
+        "typeVersion": 1,
+        "position": [
+          1152,
+          544
+        ],
+        "credentials": {
+          "sshPassword": {
+            "id": "zpDayInQZyB0P1RN",
+            "name": "SSH Password account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "number": [
+              {
+                "value1": "={{$json.code}}",
+                "operation": "equal"
+              }
+            ]
+          }
+        },
+        "id": "292e835a-916e-44ca-a38b-c9fb345dbe82",
+        "name": "Did It Wake?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 1,
+        "position": [
+          1360,
+          544
+        ]
+      },
+      {
+        "parameters": {
+          "command": "echo PC woke successfully"
+        },
+        "id": "d6d02bbb-1691-4d4b-a39a-3fd2847ec07a",
+        "name": "Success",
+        "type": "n8n-nodes-base.ssh",
+        "typeVersion": 1,
+        "position": [
+          1552,
+          448
+        ],
+        "credentials": {
+          "sshPassword": {
+            "id": "CB6db7p0o7O00uNn",
+            "name": "Skynet Login"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "command": "echo PC failed to wake"
+        },
+        "id": "349c02eb-c74c-4d68-aada-108b215548d2",
+        "name": "Failure",
+        "type": "n8n-nodes-base.ssh",
+        "typeVersion": 1,
+        "position": [
+          1552,
+          640
+        ],
+        "credentials": {
+          "sshPassword": {
+            "id": "CB6db7p0o7O00uNn",
+            "name": "Skynet Login"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Ping Check",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ping Check": {
+        "main": [
+          [
+            {
+              "node": "Is PC Up?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Is PC Up?": {
+        "main": [
+          [
+            {
+              "node": "Already Up",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Send WOL",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send WOL": {
+        "main": [
+          [
+            {
+              "node": "Wait 45s",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait 45s": {
+        "main": [
+          [
+            {
+              "node": "Ping After",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ping After": {
+        "main": [
+          [
+            {
+              "node": "Did It Wake?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Did It Wake?": {
+        "main": [
+          [
+            {
+              "node": "Success",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Failure",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Salvador Solis",
+    "name": "Version 1.0",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": [
+    {
+      "updatedAt": "2025-12-28T22:20:43.053Z",
+      "createdAt": "2025-12-28T22:20:43.053Z",
+      "id": "qpU7sZqAUU8sPxuE",
+      "name": "Production"
+    },
+    {
+      "updatedAt": "2025-12-30T01:19:19.599Z",
+      "createdAt": "2025-12-30T01:19:19.599Z",
+      "id": "AnaZRYtgUgbNgGHO",
+      "name": "Dev"
+    }
+  ]
+}
