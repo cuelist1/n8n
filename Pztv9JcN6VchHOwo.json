@@ -1,0 +1,208 @@
+{
+  "updatedAt": "2026-04-22T04:11:07.627Z",
+  "createdAt": "2026-04-21T19:38:22.925Z",
+  "id": "Pztv9JcN6VchHOwo",
+  "name": "Shutdown Skynet",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -432,
+        -64
+      ],
+      "id": "cc9ba365-3618-44c9-ac8a-59c06d05a0dd",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "command": "shutdown"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        208,
+        -64
+      ],
+      "id": "5a94afaf-87be-4b9e-87ab-a1ebe77f60b3",
+      "name": "Execute a command",
+      "credentials": {
+        "sshPassword": {
+          "id": "CB6db7p0o7O00uNn",
+          "name": "Skynet Login"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 2
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -352,
+        -288
+      ],
+      "id": "599f925b-6176-4d9f-ae22-2ddd07b9d35b",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Execute a command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Execute a command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "4c32b35c-d038-4dc1-b33b-56ad6756da85",
+  "activeVersionId": "e2961c2f-b976-415a-b704-c94fd6c8aacd",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-04-21T19:38:22.925Z",
+      "createdAt": "2026-04-21T19:38:22.925Z",
+      "role": "workflow:owner",
+      "workflowId": "Pztv9JcN6VchHOwo",
+      "projectId": "bYHsD7WI2aHVxgKL"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-04-21T20:02:37.448Z",
+    "createdAt": "2026-04-21T19:58:28.920Z",
+    "versionId": "e2961c2f-b976-415a-b704-c94fd6c8aacd",
+    "workflowId": "Pztv9JcN6VchHOwo",
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          -240,
+          -64
+        ],
+        "id": "cc9ba365-3618-44c9-ac8a-59c06d05a0dd",
+        "name": "When clicking ‘Execute workflow’"
+      },
+      {
+        "parameters": {
+          "command": "shutdown"
+        },
+        "type": "n8n-nodes-base.ssh",
+        "typeVersion": 1,
+        "position": [
+          208,
+          -64
+        ],
+        "id": "5a94afaf-87be-4b9e-87ab-a1ebe77f60b3",
+        "name": "Execute a command",
+        "credentials": {
+          "sshPassword": {
+            "id": "CB6db7p0o7O00uNn",
+            "name": "Skynet Login"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 2
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.3,
+        "position": [
+          -240,
+          -208
+        ],
+        "id": "599f925b-6176-4d9f-ae22-2ddd07b9d35b",
+        "name": "Schedule Trigger"
+      }
+    ],
+    "connections": {
+      "When clicking ‘Execute workflow’": {
+        "main": [
+          [
+            {
+              "node": "Execute a command",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Execute a command",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Salvador Solis",
+    "name": "Version 1.0",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": [
+    {
+      "updatedAt": "2025-12-28T22:20:43.053Z",
+      "createdAt": "2025-12-28T22:20:43.053Z",
+      "id": "qpU7sZqAUU8sPxuE",
+      "name": "Production"
+    },
+    {
+      "updatedAt": "2025-12-30T01:19:19.599Z",
+      "createdAt": "2025-12-30T01:19:19.599Z",
+      "id": "AnaZRYtgUgbNgGHO",
+      "name": "Dev"
+    }
+  ]
+}
