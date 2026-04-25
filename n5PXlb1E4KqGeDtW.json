@@ -1,0 +1,553 @@
+{
+  "updatedAt": "2026-04-24T23:03:09.113Z",
+  "createdAt": "2026-04-24T23:02:47.736Z",
+  "id": "n5PXlb1E4KqGeDtW",
+  "name": "✨😃Automated Workflow Backups to Google Drive",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "3eb6384c-3967-413d-afbe-a14c3d39c9a8",
+      "name": "On clicking 'execute'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        784,
+        32
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "id": "b32b4ea5-9d40-4323-bd3c-c06507fae916",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        1312,
+        512
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "3d8b6ddc-84da-4562-9fbc-d5db6ad6e8ab",
+      "name": "Every Day",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        784,
+        240
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "=n8n-Workflow-Backups-{{ $json.datetime }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
+        },
+        "options": {}
+      },
+      "id": "aa9001d9-10bb-4933-9d96-d585c04b60a0",
+      "name": "Create Folder with DateTime Stamp",
+      "type": "n8n-nodes-base.googleDrive",
+      "position": [
+        1392,
+        128
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2589e80c-e8c3-4872-bd7a-d3e92f4a6ab7",
+              "name": "datetime",
+              "type": "string",
+              "value": "={{ $now }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b06c3c14-233b-4d16-923c-ba7fb53773c7",
+      "name": "Get DateTIme",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1088,
+        128
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "filters": {},
+        "requestOptions": {}
+      },
+      "id": "03106239-9ca1-4284-9522-86fda976fdd1",
+      "name": "Get Workflows",
+      "type": "n8n-nodes-base.n8n",
+      "position": [
+        1680,
+        128
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "PmxJpqviOlMS3DhE",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "maxItems": 200
+      },
+      "id": "51adad6a-d33c-4189-a302-adbf9dd4844b",
+      "name": "Limit to 200",
+      "type": "n8n-nodes-base.limit",
+      "position": [
+        1984,
+        128
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "options": {
+          "fileName": "={{ $json.name }}"
+        }
+      },
+      "id": "d6051396-6d90-4c8a-836e-93e0b262eaf7",
+      "name": "Convert Workflow to JSON File",
+      "type": "n8n-nodes-base.convertToFile",
+      "position": [
+        1568,
+        512
+      ],
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "name": "={{ $binary.data.fileName }}.json",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $('Create Folder with DateTime Stamp').item.json.id }}"
+        },
+        "options": {}
+      },
+      "id": "0bad44d8-1ee2-4767-ba5a-567caa6c6cfa",
+      "name": "Save JSON File to Google Drive Folder",
+      "type": "n8n-nodes-base.googleDrive",
+      "position": [
+        1760,
+        512
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {},
+      "id": "f3acc04d-e541-423c-8cc9-aea27b7aa99b",
+      "name": "Execute Once",
+      "type": "n8n-nodes-base.noOp",
+      "position": [
+        1152,
+        880
+      ],
+      "executeOnce": true,
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "n8n-Workflow-Backups",
+        "limit": 10,
+        "filter": {
+          "whatToSearch": "folders"
+        },
+        "options": {}
+      },
+      "id": "e0a2ff98-2d7b-47dc-922d-6a112c17b016",
+      "name": "Search Folder Names",
+      "type": "n8n-nodes-base.googleDrive",
+      "position": [
+        1344,
+        880
+      ],
+      "executeOnce": true,
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "operation": "deleteFolder",
+        "folderNoRootId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.id }}"
+        },
+        "options": {
+          "deletePermanently": true
+        }
+      },
+      "id": "5435cf9f-2428-4452-aea6-78bcef6dbd5d",
+      "name": "Delete Folders",
+      "type": "n8n-nodes-base.googleDrive",
+      "position": [
+        1760,
+        880
+      ],
+      "typeVersion": 3,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "={{ $now }}\nWorkflows Backup Complete\n{{ $('Create Folder with DateTime Stamp').item.json.name }}\nhttps://drive.google.com/drive/folders/{{ $('Create Folder with DateTime Stamp').item.json.id }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "3b7b2f1c-9288-467f-be8e-8e01bf0f7e04",
+      "name": "Complete Message",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        1120,
+        1200
+      ],
+      "webhookId": "382a3b43-b83f-47b1-a276-67c6b98a441a",
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "content": "## Save Workflows to Google Drive",
+        "height": 360,
+        "width": 800,
+        "color": 5
+      },
+      "id": "e09a4d28-b634-4f42-8d52-5dcc3e5f95ac",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1184,
+        384
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Keep Most Recent 7 Folders (Days) and Delete Others",
+        "height": 300,
+        "width": 980,
+        "color": 3
+      },
+      "id": "5d5acee3-f3c5-4e86-a36d-2892227ca938",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1008,
+        784
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Notify User via Telegram",
+        "height": 260,
+        "width": 340
+      },
+      "id": "3947f18d-3c69-48c8-8e71-379dcb12b71b",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1008,
+        1120
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get all input items and sort by name in descending order\nconst sortedItems = $input.all().sort((a, b) => {\n  if (!a.name || !b.name) return 0;\n  return b.name.localeCompare(a.name);\n});\n\n// Get items older than 7 days\nconst olderItems = sortedItems.slice(7);\n\nreturn olderItems\n\n"
+      },
+      "id": "d299bb71-5fa0-437d-beba-13065a0c2136",
+      "name": "Find Folders to Delete",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1568,
+        880
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "content": "## Limit for Debugging\nRemove this once you have it up and running",
+        "height": 340,
+        "width": 260
+      },
+      "id": "c9e05ae7-26a8-4440-a3f9-44bf3996f395",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1904,
+        0
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Get All Workflows\n",
+        "height": 340,
+        "width": 260
+      },
+      "id": "b9c2d3fd-6c15-44f3-855f-14ec72e0eb43",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1600,
+        0
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Create NEW Google Folder\n",
+        "height": 340,
+        "width": 260
+      },
+      "id": "84628aa1-040e-4d05-8482-16960c233365",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1312,
+        0
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Get DateTime Stamp\n",
+        "height": 340,
+        "width": 260
+      },
+      "id": "58e4ecf3-9d50-4944-9df2-42e9358629e8",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1008,
+        0
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "# ✨😃 Automated Workflow Backups to Google Drive\n\nThis workflow automates the process of backing up your n8n workflows to Google Drive daily. It creates timestamped folders, saves workflows as JSON files, and manages old backups by retaining only the most recent seven days of data. Notifications are sent via Telegram to keep you informed of the backup status.\n\n## How It Works\n\n### Backup Creation Process 🗂️\n- **Triggering Backups**: The workflow starts with either a manual trigger or a scheduled trigger that runs daily.\n- **Folder Creation**: Creates a new folder in Google Drive with a timestamped name (e.g., `n8n-Workflow-Backups-YYYY-MM-DD`).\n- **Workflow Retrieval**: Fetches all workflows from your n8n instance.\n- **File Conversion**: Converts each workflow into a JSON file for storage.\n- **File Upload**: Saves the JSON files into the newly created Google Drive folder.\n\n### Backup Management 🔄\n- **Folder Search**: Searches for existing backup folders in Google Drive with names matching `n8n-Workflow-Backups`.\n- **Retention Policy**: Identifies folders older than seven days using a custom JavaScript function and deletes them permanently to free up space.\n\n### Notifications 📲\n- **Telegram Alerts**: Sends a message via Telegram once the backup process is complete, including the folder name and a link to access it in Google Drive.\n\n## Setup Steps\n\n### API Configuration 🔑\n1. **Google Drive Integration**:\n   - Set up Google Drive OAuth2 credentials in n8n.\n   - Specify the root folder or desired location for backups.\n2. **n8n API Access**:\n   - Configure n8n API credentials to allow fetching workflows.\n3. **Telegram Notifications**:\n   - Add your Telegram bot credentials and chat ID for notification delivery.\n\n### Workflow Customization ⚙️\n1. Define the schedule for automatic backups (e.g., daily at midnight).\n2. Adjust the retention period if you need more or fewer days of backups.\n3. Customize the Telegram message format as needed.\n\n### Testing & Deployment 🚀\n1. Run the workflow manually to verify folder creation and file uploads.\n2. Check that old folders are deleted correctly after seven days.\n3. Confirm Telegram notifications are sent with accurate details.\n\n## Use Case Scenarios\nThis workflow is perfect for teams or individuals who want to ensure their n8n workflows are securely backed up and organized. It is especially useful for:\n- Protecting against accidental data loss.\n- Automating routine administrative tasks.\n\n\nBy combining automated backups, retention management, and real-time notifications, this workflow ensures your n8n workflows are always safe and accessible!\n",
+        "height": 1480,
+        "width": 700,
+        "color": 7
+      },
+      "id": "67052f0d-2d6f-47b2-8d4a-70d58cd053e2",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1
+    }
+  ],
+  "connections": {
+    "Every Day": {
+      "main": [
+        [
+          {
+            "node": "Get DateTIme",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Once": {
+      "main": [
+        [
+          {
+            "node": "Search Folder Names",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Complete Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get DateTIme": {
+      "main": [
+        [
+          {
+            "node": "Create Folder with DateTime Stamp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit to 200": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Workflows": {
+      "main": [
+        [
+          {
+            "node": "Limit to 200",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Execute Once",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Convert Workflow to JSON File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Folder Names": {
+      "main": [
+        [
+          {
+            "node": "Find Folders to Delete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On clicking 'execute'": {
+      "main": [
+        [
+          {
+            "node": "Get DateTIme",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Folders to Delete": {
+      "main": [
+        [
+          {
+            "node": "Delete Folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Workflow to JSON File": {
+      "main": [
+        [
+          {
+            "node": "Save JSON File to Google Drive Folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Folder with DateTime Stamp": {
+      "main": [
+        [
+          {
+            "node": "Get Workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save JSON File to Google Drive Folder": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "4ba002fb-ec93-4d05-9cb8-04f6e81cf453",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-04-24T23:02:47.736Z",
+      "createdAt": "2026-04-24T23:02:47.736Z",
+      "role": "workflow:owner",
+      "workflowId": "n5PXlb1E4KqGeDtW",
+      "projectId": "bYHsD7WI2aHVxgKL"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
