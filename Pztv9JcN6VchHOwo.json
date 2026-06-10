@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-04-22T04:11:07.627Z",
+  "updatedAt": "2026-05-03T04:49:50.696Z",
   "createdAt": "2026-04-21T19:38:22.925Z",
   "id": "Pztv9JcN6VchHOwo",
   "name": "Shutdown Skynet",
@@ -11,8 +11,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -432,
-        -64
+        -544,
+        -96
       ],
       "id": "cc9ba365-3618-44c9-ac8a-59c06d05a0dd",
       "name": "When clicking ‘Execute workflow’"
@@ -50,11 +50,27 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.3,
       "position": [
-        -352,
-        -288
+        -560,
+        -384
       ],
       "id": "599f925b-6176-4d9f-ae22-2ddd07b9d35b",
       "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "shutdown-machine",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -192,
+        -416
+      ],
+      "id": "cab4c7f1-91bf-4658-8172-ed14718c578f",
+      "name": "Webhook",
+      "webhookId": "d90ab377-cb9e-46be-a0a0-a6ae300ec6bc"
     }
   ],
   "connections": {
@@ -70,6 +86,11 @@
       ]
     },
     "Schedule Trigger": {
+      "main": [
+        []
+      ]
+    },
+    "Webhook": {
       "main": [
         [
           {
@@ -94,9 +115,9 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "4c32b35c-d038-4dc1-b33b-56ad6756da85",
-  "activeVersionId": "e2961c2f-b976-415a-b704-c94fd6c8aacd",
-  "triggerCount": 1,
+  "versionId": "60aee40c-7203-4ed4-a91c-5fa114fff54e",
+  "activeVersionId": "4f57571f-b062-40e2-8372-6be07d18a1cb",
+  "triggerCount": 2,
   "shared": [
     {
       "updatedAt": "2026-04-21T19:38:22.925Z",
@@ -107,9 +128,9 @@
     }
   ],
   "activeVersion": {
-    "updatedAt": "2026-04-21T20:02:37.448Z",
-    "createdAt": "2026-04-21T19:58:28.920Z",
-    "versionId": "e2961c2f-b976-415a-b704-c94fd6c8aacd",
+    "updatedAt": "2026-04-29T00:31:05.739Z",
+    "createdAt": "2026-04-29T00:26:03.565Z",
+    "versionId": "4f57571f-b062-40e2-8372-6be07d18a1cb",
     "workflowId": "Pztv9JcN6VchHOwo",
     "nodes": [
       {
@@ -117,8 +138,8 @@
         "type": "n8n-nodes-base.manualTrigger",
         "typeVersion": 1,
         "position": [
-          -240,
-          -64
+          -544,
+          -96
         ],
         "id": "cc9ba365-3618-44c9-ac8a-59c06d05a0dd",
         "name": "When clicking ‘Execute workflow’"
@@ -140,7 +161,8 @@
             "id": "CB6db7p0o7O00uNn",
             "name": "Skynet Login"
           }
-        }
+        },
+        "onError": "continueRegularOutput"
       },
       {
         "parameters": {
@@ -155,11 +177,27 @@
         "type": "n8n-nodes-base.scheduleTrigger",
         "typeVersion": 1.3,
         "position": [
-          -240,
-          -208
+          -560,
+          -384
         ],
         "id": "599f925b-6176-4d9f-ae22-2ddd07b9d35b",
         "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "shutdown-machine",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          -192,
+          -416
+        ],
+        "id": "cab4c7f1-91bf-4658-8172-ed14718c578f",
+        "name": "Webhook",
+        "webhookId": "d90ab377-cb9e-46be-a0a0-a6ae300ec6bc"
       }
     ],
     "connections": {
@@ -184,25 +222,37 @@
             }
           ]
         ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Execute a command",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
       }
     },
+    "nodeGroups": [],
     "authors": "Salvador Solis",
-    "name": "Version 1.0",
-    "description": "",
+    "name": "Version 4f57571f",
+    "description": "added web hook",
     "autosaved": true
   },
   "tags": [
-    {
-      "updatedAt": "2025-12-28T22:20:43.053Z",
-      "createdAt": "2025-12-28T22:20:43.053Z",
-      "id": "qpU7sZqAUU8sPxuE",
-      "name": "Production"
-    },
     {
       "updatedAt": "2025-12-30T01:19:19.599Z",
       "createdAt": "2025-12-30T01:19:19.599Z",
       "id": "AnaZRYtgUgbNgGHO",
       "name": "Dev"
+    },
+    {
+      "updatedAt": "2025-12-28T22:20:43.053Z",
+      "createdAt": "2025-12-28T22:20:43.053Z",
+      "id": "qpU7sZqAUU8sPxuE",
+      "name": "Production"
     }
   ]
 }
