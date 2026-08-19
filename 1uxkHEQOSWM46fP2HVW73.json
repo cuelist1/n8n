@@ -3,7 +3,7 @@
   "createdAt": "2026-01-06T22:25:46.756Z",
   "id": "1uxkHEQOSWM46fP2HVW73",
   "name": "SSH_SERVER",
-  "active": true,
+  "active": false,
   "isArchived": false,
   "nodes": [
     {
@@ -66,10 +66,12 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
+  "nodeGroups": [],
   "pinData": {},
   "versionId": "40e22d87-5b24-4a19-9de9-3481d3330909",
-  "activeVersionId": "40e22d87-5b24-4a19-9de9-3481d3330909",
+  "activeVersionId": null,
   "triggerCount": 0,
+  "tags": [],
   "shared": [
     {
       "updatedAt": "2026-01-06T22:25:46.756Z",
@@ -79,68 +81,5 @@
       "projectId": "bYHsD7WI2aHVxgKL"
     }
   ],
-  "activeVersion": {
-    "updatedAt": "2026-01-06T22:27:50.066Z",
-    "createdAt": "2026-01-06T22:27:41.388Z",
-    "versionId": "40e22d87-5b24-4a19-9de9-3481d3330909",
-    "workflowId": "1uxkHEQOSWM46fP2HVW73",
-    "nodes": [
-      {
-        "parameters": {
-          "command": "={{ $json.command }}"
-        },
-        "type": "n8n-nodes-base.ssh",
-        "typeVersion": 1,
-        "position": [
-          -192,
-          -80
-        ],
-        "id": "9bbf811c-4909-4965-9942-1994f2c53060",
-        "name": "Execute a command",
-        "credentials": {
-          "sshPassword": {
-            "id": "zpDayInQZyB0P1RN",
-            "name": "SSH Password account"
-          }
-        }
-      },
-      {
-        "parameters": {
-          "workflowInputs": {
-            "values": [
-              {
-                "name": "command"
-              }
-            ]
-          }
-        },
-        "type": "n8n-nodes-base.executeWorkflowTrigger",
-        "typeVersion": 1.1,
-        "position": [
-          -464,
-          -128
-        ],
-        "id": "e9f3789c-6c65-4267-b471-3e3556c2f32a",
-        "name": "When Executed by Another Workflow"
-      }
-    ],
-    "connections": {
-      "When Executed by Another Workflow": {
-        "main": [
-          [
-            {
-              "node": "Execute a command",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      }
-    },
-    "authors": "Salvador Solis",
-    "name": "Version 40e22d87",
-    "description": "",
-    "autosaved": false
-  },
-  "tags": []
+  "activeVersion": null
 }
