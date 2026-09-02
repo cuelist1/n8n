@@ -1,0 +1,33 @@
+{
+  "id": "QNEXSovs90WWmCxd",
+  "name": "My workflow 2",
+  "active": false,
+  "activeVersionId": null,
+  "createdAt": "2026-09-01T21:01:25.506Z",
+  "updatedAt": "2026-09-01T21:05:38.993Z",
+  "isArchived": true,
+  "versionId": "86a63ac0-f6f0-4082-a21e-ef73f3e4bd81",
+  "triggerCount": 0,
+  "nodes": [],
+  "connections": {},
+  "nodeGroups": [],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "pinData": {},
+  "meta": null,
+  "tags": [],
+  "shared": [
+    {
+      "role": "workflow:owner",
+      "workflowId": "QNEXSovs90WWmCxd",
+      "projectId": "bYHsD7WI2aHVxgKL",
+      "createdAt": "2026-09-01T21:01:25.506Z",
+      "updatedAt": "2026-09-01T21:01:25.506Z"
+    }
+  ],
+  "activeVersion": null
+}
