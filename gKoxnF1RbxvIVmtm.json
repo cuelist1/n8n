@@ -1,0 +1,283 @@
+{
+  "id": "gKoxnF1RbxvIVmtm",
+  "name": "Dockhand - Stop Gluetun Start qBittorrent",
+  "active": false,
+  "activeVersionId": null,
+  "createdAt": "2026-09-01T21:18:38.759Z",
+  "updatedAt": "2026-09-01T23:52:09.584Z",
+  "isArchived": true,
+  "versionId": "dcfcca0f-8b6b-4552-991b-1e27dd47532a",
+  "triggerCount": 0,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "93a5eec4-35e0-40f2-bd8e-9cfa5136f600",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://192.168.10.100:3000/api/containers?env=2",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "authorization",
+              "value": "bearer dh_YBMaW457WSIQUipQPWG1BAcKlkmJAFV31xySwMSYYgg"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "cef82ab7-ad13-45b8-9824-7afa861588f4",
+      "name": "Get Containers",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        80,
+        -96
+      ],
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "qoVGQscS4yvCaOhz",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const containers = $json;\n\nconst list = Array.isArray(containers)\n ? containers\n : (containers.containers || containers.data || []);\n\nconst gluetun = list.find(c => {\n const name = String(c.name || c.Names || '').replace(/^\\//, '');\n return name === 'gluetun';\n});\n\nif (!gluetun) {\n throw new Error('Could not find container named gluetun');\n}\n\nreturn [{\n json: {\n gluetunId: gluetun.id || gluetun.Id,\n gluetunName: String(gluetun.name || gluetun.Names || '').replace(/^\\//, '')\n }\n}];"
+      },
+      "id": "7554ce33-cbbb-42a5-97d3-abed53bda8ec",
+      "name": "Find Gluetun",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ 'http://YOUR_DOCKHAND_IP:3000/api/containers/' + $json.gluetunId + '/stop' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "c3710961-e390-4df0-936a-a1ae033ba357",
+      "name": "Stop Gluetun",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        560,
+        -96
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "sw17oF2XKtDascFk",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "id": "8a0939ca-a240-4a47-b061-58b4c3e47e31",
+      "name": "Wait 10 Seconds",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        800,
+        -96
+      ],
+      "webhookId": "92f9cdd6-507a-414d-8632-95f177335931"
+    },
+    {
+      "parameters": {
+        "url": "http://YOUR_DOCKHAND_IP:3000/api/containers",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "9d2f6e1d-fafb-4692-9490-48721f82924f",
+      "name": "Get Containers Again",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1040,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const containers = $json;\n\nconst list = Array.isArray(containers)\n ? containers\n : (containers.containers || containers.data || []);\n\nconst qbittorrent = list.find(c => {\n const name = String(c.name || c.Names || '').replace(/^\\//, '');\n return name === 'qbittorrent';\n});\n\nif (!qbittorrent) {\n throw new Error('Could not find container named qbittorrent');\n}\n\nreturn [{\n json: {\n qbittorrentId: qbittorrent.id || qbittorrent.Id,\n qbittorrentName: String(qbittorrent.name || qbittorrent.Names || '').replace(/^\\//, '')\n }\n}];"
+      },
+      "id": "8ed07f2f-96a1-43c1-90dd-b6a542c801bd",
+      "name": "Find qBittorrent",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://192.168.10.100:3000/api/containers/qbittorrent/start?env=2",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "options": {}
+      },
+      "id": "b9fe1e3f-f0c3-4dc8-8e45-1eed6d350b6a",
+      "name": "Start qBittorrent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1520,
+        -96
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "sw17oF2XKtDascFk",
+          "name": "Header Auth account"
+        },
+        "httpBearerAuth": {
+          "id": "qoVGQscS4yvCaOhz",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://192.168.10.100:3000/api/containers/qbittorrent/start?env=2",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        -544
+      ],
+      "id": "481b892a-954a-426f-b58a-388b394687c3",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "qoVGQscS4yvCaOhz",
+          "name": "Bearer Auth account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Containers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Containers": {
+      "main": [
+        [
+          {
+            "node": "Find Gluetun",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Gluetun": {
+      "main": [
+        [
+          {
+            "node": "Stop Gluetun",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stop Gluetun": {
+      "main": [
+        [
+          {
+            "node": "Wait 10 Seconds",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 10 Seconds": {
+      "main": [
+        [
+          {
+            "node": "Get Containers Again",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Containers Again": {
+      "main": [
+        [
+          {
+            "node": "Find qBittorrent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find qBittorrent": {
+      "main": [
+        [
+          {
+            "node": "Start qBittorrent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "nodeGroups": [],
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "pinData": {},
+  "meta": null,
+  "tags": [],
+  "shared": [
+    {
+      "role": "workflow:owner",
+      "workflowId": "gKoxnF1RbxvIVmtm",
+      "projectId": "bYHsD7WI2aHVxgKL",
+      "createdAt": "2026-09-01T21:18:38.759Z",
+      "updatedAt": "2026-09-01T21:18:38.759Z"
+    }
+  ],
+  "activeVersion": null
+}
